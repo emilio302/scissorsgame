@@ -195,13 +195,20 @@ print(hand,0,120)
 end
 -->8
 --load intro
+intro_y = -30
 function loadintro()
 cls(0)
-spr(192,20,10,4,4)
-print("welcome to",20,80)
-print("sicissors card",20,92)
-print("a rock and paper game",20,104)
-print("please press down button",20,116)
+printh("intro_y: "..intro_y)
+printh(time())
+sspr(0,96,32,32,35,intro_y,64,64)
+if(intro_y<15) then
+		intro_y=intro_y+((flr(time()*10)))
+	else
+		print("welcome to",20,80)
+		print("sicissors card",20,92)
+		print("a rock and paper game",20,104)
+		print("please press up button",20,116)
+	end
 end
 -->8
 --game core
