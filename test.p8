@@ -5,7 +5,7 @@ function _init()
 screen = "menu"
 --screen="initial"
 lifes=9
-initial_enemylife=1
+initial_enemylife=10
 enemymove=1
 enemydebuff=1
 current_enemy=1
@@ -84,7 +84,7 @@ end
 
 function drawlife(life)
 	spr(8,110,60,2,2)
-	print(life,114,65,0)
+	print(life,116,66,0)
 end
 
 function drawcard(card,x,y)
@@ -198,8 +198,6 @@ end
 intro_y = -30
 function loadintro()
 cls(0)
-printh("intro_y: "..intro_y)
-printh(time())
 sspr(0,96,32,32,35,intro_y,64,64)
 if(intro_y<15) then
 		intro_y=intro_y+((flr(time()*10)))
@@ -365,18 +363,20 @@ debuffs_sprites={160,162}
 function finishedscene()
  cls(0)
  if(current_enemy==last_boss) then
-		print("you won!!!!",50,64,7)
-		print("❎ return to main menu",50,110,7)
+		print("you won!!!!",44,40,7)
+		print("❎ return to main menu",31,110,7)
 		if(btnp(button_secondary))then
 			screen="menu"
 		end
  elseif(still_alive) then
- 	print("you nailed this time",50,64,7)
- 	print("still...",58,72)
- 	print("❎ continue",50,110)
+  print(".",0,0,7)
+  print(".",126,0,7)
+ 	print("you nailed this time",24,50,7)
+ 	print("still...",48,72)
+ 	print("❎ continue",42,110)
  else
- 	print("you lost...",50,64,7)
- 	print("❎ restart?",50,110)
+ 	print("you lost...",42,64,7)
+ 	print("❎ restart?",42,110)
  end
 end
 __gfx__
