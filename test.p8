@@ -5,7 +5,7 @@ function _init()
 --screen = "menu"
 screen="initial"
 lifes=9
-enemylife=10
+initial_enemylife=1
 enemymove=1
 current_enemy=1
 still_alive=true
@@ -35,7 +35,12 @@ function _update()
 		screen="initial"
 	end
 	if btnp(button_accept) and screen=="finishedgame" then
-		screen="menu"
+		if(still_alive) then
+			setupnewround()
+			screen="game"
+		else
+			screen="menu"
+		end
 	end
  if(screen=="game") then
 	 currentcardselected()
@@ -168,6 +173,8 @@ end
 
 function initialsetup()
 still_alive=true
+current_enemy=1
+enemylife=initial_enemylife
 shuffledeck()
 getcard()
 getcard()
@@ -236,15 +243,19 @@ function playcard()
 	elseif(won<0) then
 		lifes=lifes-enemies[current_enemy].force
 	end
-	if(lifes<1) then
-	still_alive=false
-	screen=finishedgame
-	end
-	if(enemylife<1) then
-	screen="finishedgame"
-	end
 	discardcard(deli(hand,cardinhandselected))
 	getcard()
+	checkendhand()
+end
+
+function checkendhand()
+	if(lifes<1) then
+		still_alive=false
+		screen="finishedgame"
+	end
+	if(enemylife<1) then
+		screen="finishedgame"
+	end
 end
 
 --aux function to filter array
@@ -282,6 +293,18 @@ end
 function getrandomenemymove()
 	return flr(rnd(3)) + 1
 end
+
+function setupnewround()
+cardinhandselected=0
+current_enemy+=1
+enemylife=initial_enemylife
+enemymove=getrandomenemymove()
+hand={}
+shuffledeck()
+getcard()
+getcard()
+getcard()
+end
 -->8
 --constants
 button_right=1
@@ -318,12 +341,18 @@ move_sprite={0,2,4}
 --load finishedgame scene
 function finishedscene()
  cls(0)
- if(still_alive) then
- 	print("you won!!",50,64,7)
+ if(current_enemy==3) then
+		print("you won!!!!",50,64,7)
+		print("❎ return to main menu",50,110,7)
+		screen="menu"
+ elseif(still_alive) then
+ 	print("you nailed this time",50,64,7)
+ 	print("still...",58,72)
+ 	print("❎ continue",50,110)
  else
  	print("you lost...",50,64,7)
+ 	print("❎ restart?",50,110)
  end
-  print("➡️ restart?",50,110)
 end
 __gfx__
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb77777777bbbbbbb00bbbbbb00bbb000000000000000000000000000000000000000000000000
