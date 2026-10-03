@@ -81,12 +81,13 @@ function drawenemy(enemy)
 	x=32
 	y=15
 	--drawing arms
-	armposition=y+(6+5*(flr(time())%2))
+	armposition=y+(6+5*(flr(time() * 2) % 2))
 	sspr(96,32,16,32,x-16,armposition,32,64)
 	sspr(96,32,16,32,x+48,armposition,32,64,true)
 	--drawing face
-	sspr(enemies[enemy].mask,32,32,16,x,y,64,32)
-	sspr(enemies[enemy].face,48,32,16,x,y+32,64,32)
+	headposition=(2*(flr(time() * 2) % 2))
+	sspr(enemies[enemy].mask,32,32,16,x,y+headposition,64,32)
+	sspr(enemies[enemy].face,48,32,16,x,y+headposition+32,64,32)
 	--drawing moves
 	drawenemymove()
 	--drawing life
