@@ -5,7 +5,7 @@ function _init()
 --screen = "menu"
 screen="initial"
 lifes=9
-initial_enemylife=1
+initial_enemylife=10
 enemymove=1
 current_enemy=1
 still_alive=true
@@ -245,6 +245,7 @@ function playcard()
 	end
 	discardcard(deli(hand,cardinhandselected))
 	getcard()
+	enemymove=getrandomenemymove()
 	checkendhand()
 end
 
