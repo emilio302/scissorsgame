@@ -8,15 +8,13 @@ lifes=9
 enemylife=10
 enemymove=1
 current_enemy=1
+still_alive=true
 cls(0)
-palt(0,false)
+palt(0,false) 
 palt(11,true)
 end
 
 function _draw()
-	if btn(3) and screen=="menu" then
-		screen="game"
-		end
 	if screen=="menu" then
 		loadintro()
 		end
@@ -27,10 +25,21 @@ function _draw()
 	if screen=="game" then
 		loadmainscene()
 		end
+	if screen=="finishedgame" then
+		finishedscene(still_alive)
+		end
 end
 
 function _update()
-currentcardselected()
+ if btnp(button_accept) and screen=="menu" then
+		screen="initial"
+	end
+	if btnp(button_accept) and screen=="finishedgame" then
+		screen="menu"
+	end
+ if(screen=="game") then
+	 currentcardselected()
+ end
 end
 -->8
 --dawing functions
@@ -158,6 +167,7 @@ drawlife(lifes)
 end
 
 function initialsetup()
+still_alive=true
 shuffledeck()
 getcard()
 getcard()
@@ -168,6 +178,7 @@ end
 -->8
 --load intro
 function loadintro()
+cls(0)
 print("welcome to",0,0)
 print("sicissors card",0,12)
 print("a rock and paper game",0,24)
@@ -220,11 +231,17 @@ end
 function playcard()
  local cardplayed=deck[hand[cardinhandselected]]
  local won = calculatewinmove(cardplayed.move+1,enemymove)
-	printh(won<0)
 	if(won>0) then
 		enemylife=enemylife-cardplayed.value
 	elseif(won<0) then
-		lifes=lifes-1
+		lifes=lifes-enemies[current_enemy].force
+	end
+	if(lifes<1) then
+	still_alive=false
+	screen=finishedgame
+	end
+	if(enemylife<1) then
+	screen="finishedgame"
 	end
 	discardcard(deli(hand,cardinhandselected))
 	getcard()
@@ -264,7 +281,7 @@ end
 
 function getrandomenemymove()
 	return flr(rnd(3)) + 1
-end	
+end
 -->8
 --constants
 button_right=1
@@ -297,6 +314,17 @@ enemies = {
 
 --sprites
 move_sprite={0,2,4}
+-->8
+--load finishedgame scene
+function finishedscene()
+ cls(0)
+ if(still_alive) then
+ 	print("you won!!",50,64,7)
+ else
+ 	print("you lost...",50,64,7)
+ end
+  print("➡️ restart?",50,110)
+end
 __gfx__
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb77777777bbbbbbb00bbbbbb00bbb000000000000000000000000000000000000000000000000
 bbbbbbbbbbbbbbbbbbbbb0bbb0bbbbbbbbbbbbb0bbbbbbbbbbb7777777777bbbbb0ee0bbbb0ee0bb000000000000000000000000000000000000000000000000
