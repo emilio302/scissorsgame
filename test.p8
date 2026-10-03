@@ -152,6 +152,7 @@ shuffledeck()
 getcard()
 getcard()
 getcard()
+enemymove=getrandomenemymove()
 print(hand,0,120)
 end
 -->8
@@ -244,7 +245,7 @@ function calculatewinmove(user,enemy)
 end
 
 function getrandomenemymove()
-	return rnd(3)
+	return flr(rnd(3)) + 1
 end	
 -->8
 --constants
