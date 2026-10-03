@@ -5,7 +5,7 @@ function _init()
 initial_time=time()
 screen = "menu"
 --screen="initial"
-lifes=9
+initial_lifes=9
 initial_enemylife=10
 enemymove=1
 enemydebuff=1
@@ -227,6 +227,7 @@ function initialsetup()
 still_alive=true
 current_enemy=1
 enemylife=initial_enemylife
+lifes=initial_lifes
 shuffledeck()
 getcard()
 getcard()
@@ -244,6 +245,7 @@ sspr(0,96,32,32,35,intro_y,64,64)
 if(intro_y<15) then
 		intro_y=intro_y+((flr(time()*10)))
 	else
+	 intro_y=15
 		print("welcome to",20,80)
 		print("sicissors card",20,92)
 		print("a rock and paper game",20,104)
@@ -422,13 +424,13 @@ enemies = {
 		mask=32,
 		face=0,
 		force=2,
-		debuffs={1,2}
+		debuffs={1}
 	},
 	[3] = {
 		mask=64,
 		face=0,
 		force=3,
-		debuffs={1,2}
+		debuffs={1}
 	}
 }
 
@@ -440,7 +442,7 @@ debuffs_sprites={160,162}
 --load finishedgame scene
 function finishedscene()
  cls(0)
- if(current_enemy==last_boss) then
+ if(current_enemy==last_boss and still_alive) then
 		print("you won!!!!",44,40,7)
 		print("❎ return to main menu",31,110,7)
 		if(btnp(button_secondary))then
@@ -453,6 +455,9 @@ function finishedscene()
  else
  	print("you lost...",42,64,7)
  	print("❎ restart?",42,110)
+ 	if(btnp(button_secondary))then
+			screen="menu"
+		end
  end
 end
 __gfx__
