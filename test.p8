@@ -4,9 +4,10 @@ __lua__
 function _init()
 --screen = "menu"
 screen="initial"
-lifes=10
+lifes=9
 enemylife=10
 enemymove=1
+current_enemy=1
 cls(0)
 palt(0,false)
 palt(11,true)
@@ -150,10 +151,10 @@ end
 function loadmainscene()
 cls(6)
 drawmap()
-drawenemy(1)
+drawenemy(current_enemy)
 drawtable()
 drawhand(hand)
-drawlife(10)
+drawlife(lifes)
 end
 
 function initialsetup()
@@ -216,7 +217,15 @@ function currentcardselected()
 		end			
 end
 
-function playcard() 
+function playcard()
+ local cardplayed=deck[hand[cardinhandselected]]
+ local won = calculatewinmove(cardplayed.move+1,enemymove)
+	printh(won<0)
+	if(won>0) then
+		enemylife=enemylife-cardplayed.value
+	elseif(won<0) then
+		lifes=lifes-1
+	end
 	discardcard(deli(hand,cardinhandselected))
 	getcard()
 end
@@ -281,9 +290,9 @@ move={
 }
 
 enemies = {
-	[1] = {mask=0,face=0},
-	[2] = {mask=32,face=0},
-	[3] = {mask=64, face=0}
+	[1] = {mask=0,face=0,force=1},
+	[2] = {mask=32,face=0,force=2},
+	[3] = {mask=64,face=0,force=3}
 }
 
 --sprites
