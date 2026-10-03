@@ -250,6 +250,7 @@ if(intro_y<15) then
 		print("sicissors card",20,92)
 		print("a rock and paper game",20,104)
 		print("please press up button",20,116)
+		print("0.0.5",105,0)
 	end
 end
 -->8
@@ -424,13 +425,13 @@ enemies = {
 		mask=32,
 		face=0,
 		force=2,
-		debuffs={1}
+		debuffs={1,2}
 	},
 	[3] = {
 		mask=64,
 		face=0,
 		force=3,
-		debuffs={1}
+		debuffs={1,2}
 	}
 }
 
