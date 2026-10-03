@@ -88,9 +88,10 @@ function drawlife(life)
 end
 
 function drawcard(card,x,y)
+	local colorbyvalue={11,10,8}
 	spr(6,x,y,2,2)
 	spr(card.move*2,x,y,2,2)
-	circfill(x+1,y+2,3,6)
+	circfill(x+1,y+2,3,colorbyvalue[card.value])
 	print(card.value,x,y,0)
 end
 
@@ -123,6 +124,10 @@ end
 function drawenemydebuffs()
 	local spr_texture = debuffs_sprites[enemydebuff]
 	circfill(112,35,10,6)
+	if(enemydebuff==2) then
+		local blocked_move=(((enemymove+1)%3)+1)
+		spr(move_sprite[blocked_move],105,27,2,2)
+	end
 	spr(spr_texture,104,27,2,2)
 	circ(112,35,10,0)
 end
@@ -191,6 +196,7 @@ getcard()
 getcard()
 getcard()
 enemymove=getrandomenemymove()
+enemydebuff=getrandomenemydebuff()
 print(hand,0,120)
 end
 -->8
@@ -255,14 +261,18 @@ end
 function playcard()
  local cardplayed=deck[hand[cardinhandselected]]
  local won = calculatewinmove(cardplayed.move+1,enemymove)
-	if(won>0) then
+	if(won=="invalid") then
+		return
+	end
+	if(won=="win") then
 		enemylife=enemylife-cardplayed.value
-	elseif(won<0) then
+	elseif(won=="lose") then
 		lifes=lifes-enemies[current_enemy].force
 	end
 	discardcard(deli(hand,cardinhandselected))
 	getcard()
 	enemymove=getrandomenemymove()
+	enemydebuff=getrandomenemydebuff()
 	checkendhand()
 end
 
@@ -296,15 +306,24 @@ end
 
 function calculatewinmove(user,enemy)
 	if(user==enemy) then
-		return 0
+		return "tie"
 	elseif(user==1 and enemy==2) then
-		return 1
+		if(enemydebuff==2) then
+			return "invalid"
+		end
+		return "win"
 	elseif(user==2 and enemy==3) then
-		return 1
+		if(enemydebuff==2) then
+			return "invalid"
+		end
+		return "win"
 	elseif(user==3 and enemy==1) then
-		return 1
+		if(enemydebuff==2) then
+			return "invalid"
+		end
+		return "win"
 	else
-		return -1
+		return "lose"
 	end
 end
 
@@ -312,16 +331,22 @@ function getrandomenemymove()
 	return flr(rnd(3)) + 1
 end
 
+function getrandomenemydebuff()
+	enemydebuffs = enemies[current_enemy].debuffs
+	return enemydebuffs[flr(rnd(#enemydebuffs))+1]
+end
+
 function setupnewround()
-cardinhandselected=0
-current_enemy+=1
-enemylife=initial_enemylife
-enemymove=getrandomenemymove()
-hand={}
-shuffledeck()
-getcard()
-getcard()
-getcard()
+	cardinhandselected=0
+	current_enemy+=1
+	enemylife=initial_enemylife
+	enemymove=getrandomenemymove()
+	enemydebuff=getrandomenemydebuff()
+	hand={}
+	shuffledeck()
+	getcard()
+	getcard()
+	getcard()
 end
 -->8
 --constants
@@ -349,9 +374,24 @@ move={
 }
 
 enemies = {
-	[1] = {mask=0,face=0,force=1},
-	[2] = {mask=32,face=0,force=2},
-	[3] = {mask=64,face=0,force=3}
+	[1] = {
+		mask=0,
+		face=0,
+		force=1,
+		debuffs={1}
+		},
+	[2] = {
+		mask=32,
+		face=0,
+		force=2,
+		debuffs={1,2}
+	},
+	[3] = {
+		mask=64,
+		face=0,
+		force=3,
+		debuffs={1,2}
+	}
 }
 
 --sprites
@@ -369,8 +409,6 @@ function finishedscene()
 			screen="menu"
 		end
  elseif(still_alive) then
-  print(".",0,0,7)
-  print(".",126,0,7)
  	print("you nailed this time",24,50,7)
  	print("still...",48,72)
  	print("❎ continue",42,110)
@@ -460,7 +498,7 @@ bbbbbbbbbbbbbbbb0000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb88000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb8b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbb888000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 bbbbbbbbbbbbbbbbbbbbbbbbbbbb888b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 bbbbbbbbbbbbbbbbbbbbbbbbbbb888bb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
@@ -475,7 +513,7 @@ bbbbbbbbbbbbbbbbbbb888bbbbbbbbbb000000000000000000000000000000000000000000000000
 bbbbbbbbbbbbbbbbbb888bbbbbbbbbbb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 bbbbbbbbbbbbbbbbb888bbbbbbbbbbbb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 bbbbbbbbbbbbbbbb888bbbbbbbbbbbbb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-bbbbbbbbbbbbbbbb88bbbbbbbbbbbbbb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+bbbbbbbbbbbbbbbbb8bbbbbbbbbbbbbb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 bbbbbbbbbbbbbbb00bbbbbbbbbbbbbbb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 bbbbbbbbbbbb000cc000bbbbbbbbbbbb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
