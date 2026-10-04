@@ -2,6 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 function _init()
+version="0.0.6"
 initial_time=time()
 screen = "menu"
 --screen="initial"
@@ -250,7 +251,7 @@ if(intro_y<15) then
 		print("sicissors card",20,92)
 		print("a rock and paper game",20,104)
 		print("please press up button",20,116)
-		print("0.0.5",105,0)
+		print(version,105,0)
 	end
 end
 -->8
@@ -301,7 +302,14 @@ function playcard()
  local cardplayed=deck[hand[cardinhandselected]]
  local won = calculatewinmove(cardplayed.move+1,enemymove)
 	if(won=="invalid") then
-		return
+		local card1 = deck[hand[1]]
+		local card2 = deck[hand[2]]
+		local card3 = deck[hand[3]]
+		--this avoids block hand
+		if(card1.move!=card2.move or card1.move!=card3.move) then
+			return
+		end
+		won="lose"
 	end
 	if(won=="win") then
 		enemylife=enemylife-cardplayed.value
