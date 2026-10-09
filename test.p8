@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 function _init()
-version="0.0.6"
+version="0.0.7"
 initial_time=time()
 screen = "menu"
 --screen="initial"
@@ -12,6 +12,7 @@ enemymove=1
 enemydebuff=1
 current_enemy=1
 last_boss=3
+discards_remaining=1
 still_alive=true
 cls(0)
 palt(0,false) 
@@ -87,15 +88,24 @@ function drawhand(hand,x,y)
 			drawcard(deck[hand[3]],75,90)
 		end
 	if cardinhandselected == 4 then
-		print("\#0cards",105,105,7)
-		print("\#0"..#deck_todraw,113,111,7)
+		print("\#0cards",105,106,7)
+		print("\#0"..#deck_todraw,113,113,7)
 		end
-	if cardinhandselected == 0 then
-		print("\#0show",10,105,7)
-		end	
 	if btn(button_secondary) and cardinhandselected==0 then
-		showdiscardpile()
+  showdiscardpile()
 		end		 
+end
+
+function drawkeybinds()
+	if (cardinhandselected>0 and cardinhandselected <4) then
+  rectfill(0,116,42,127)
+  print("❎ play",1,117,7)
+  print("🅾️ dis ("..discards_remaining..")",1,123,7)
+ end
+ if cardinhandselected==0 then
+ 	rectfill(0,122,30,127)
+  print("🅾️ show",1,123,7)
+ end
 end
 
 function drawmap()
@@ -222,6 +232,7 @@ drawenemy(current_enemy)
 drawtable()
 drawhand(hand)
 drawlife(lifes)
+drawkeybinds()
 end
 
 function initialsetup()
@@ -250,7 +261,7 @@ if(intro_y<15) then
 		print("welcome to",20,80)
 		print("sicissors card",20,92)
 		print("a rock and paper game",20,104)
-		print("please press up button",20,116)
+		print("please press ❎ button",20,116)
 		print(version,105,0)
 	end
 end
@@ -295,7 +306,14 @@ function currentcardselected()
 		end
 	if btnp(button_accept) and cardinhandselected>0 and cardinhandselected <4 then
 		playcard()
-		end			
+		end
+	if btnp(button_secondary) and cardinhandselected>0 and cardinhandselected <4 then
+		if(discards_remaining>0) then
+		 discards_remaining=discards_remaining-1
+		 discardcard(deli(hand,cardinhandselected))
+	  getcard()
+	  end
+		end						
 end
 
 function playcard()
@@ -401,7 +419,7 @@ end
 --constants
 button_right=1
 button_left=0
-button_accept=2
+button_accept=5
 button_secondary=4
 
 deck={
