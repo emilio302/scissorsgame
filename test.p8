@@ -2,12 +2,12 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 function _init()
-version="0.0.8"
-initial_time=time()
+version="0.0.9"
 screen = "menu"
 --screen="initial"
 initial_lifes=9
 initial_enemylife=10
+position=user_positions[1]
 enemymove=1
 enemydebuff=1
 current_enemy=1
@@ -335,7 +335,15 @@ function currentcardselected()
 		 discardcard(deli(hand,cardinhandselected))
 	  getcard()
 	  end
-		end						
+		end	
+	if(position==user_positions[1]) then
+		for i = 0, 3 do
+   if (btn(i)) then
+    position=user_positions[2]
+    cardinhandselected=1
+    end
+   end
+		end					
 end
 
 function playcard()
@@ -455,6 +463,11 @@ button_up=2
 button_down=3
 button_accept=5
 button_secondary=4
+
+user_positions={
+"init",
+"hand"
+}
 
 deck={
 	{move=0,value=1},
