@@ -34,6 +34,9 @@ function _draw()
 	if screen=="finishedgame" then
 		finishedscene(still_alive)
 		end
+	if screen=="showinfo" and view=="debuff" then
+		showinfo(defuffs_texts[enemydebuff])
+		end
 end
 
 function _update()
@@ -48,8 +51,8 @@ function _update()
 			screen="menu"
 		end
 	end
- if(screen=="game") then
-	 currentcardselected()
+ if(screen=="game" or "showinfo") then
+	 currentpositionelected()
  end
  --animations handler
  for anim in all(animations) do
@@ -70,26 +73,26 @@ end
 -->8
 --dawing functions
 function drawhand(hand,x,y)
-	if cardinhandselected == 1 then
+	if cardinhandselected == 1 and view=="hand" then
 			drawcard(deck[hand[1]],35,80)
 		else
 			drawcard(deck[hand[1]],35,90)
 		end
-	if cardinhandselected == 2 then
+	if cardinhandselected == 2 and view=="hand" then
 			drawcard(deck[hand[2]],55,80)
 		else
 			drawcard(deck[hand[2]],55,90)
 		end
-	if cardinhandselected == 3 then
+	if cardinhandselected == 3 and view=="hand" then
 			drawcard(deck[hand[3]],75,80)
 		else
 			drawcard(deck[hand[3]],75,90)
 		end
-	if cardinhandselected == 4 then
+	if cardinhandselected == 4 and view=="hand" then
 		print("\#0cards",105,106,7)
 		print("\#0"..#deck_todraw,113,113,7)
 		end
-	if cardinhandselected==0 then
+	if cardinhandselected==0 and view=="hand" then
   spr(36,14,106)
   if(btn(button_secondary)) then
    showdiscardpile()
@@ -98,15 +101,28 @@ function drawhand(hand,x,y)
 end
 
 function drawkeybinds()
+ if (view=="debuff") then
+  drawblackbox(2)
+  print("❎ see",1,117,7)
+  print("⬇️ back",1,123,7)
+  return
+  end
 	if (cardinhandselected>0 and cardinhandselected <4) then
-  rectfill(0,116,42,127)
-  print("❎ play",1,117,7)
-  print("🅾️ dis ("..discards_remaining..")",1,123,7)
- end
+  drawblackbox(3)
+  print("❎ play",1,111,7)
+  print("🅾️ dis ("..discards_remaining..")",1,117,7)
+  print("⬆️ debuff",1,123,7)
+  end
  if cardinhandselected==0 then
- 	rectfill(0,122,30,127)
-  print("🅾️ show",1,123,7)
- end
+ 	drawblackbox(2)
+  print("🅾️ show",1,117,7)
+  print("⬆️ debuff",1,123,7)
+  end
+end
+
+function drawblackbox(rows)
+ box_y={122,116,110}
+ rectfill(0,box_y[rows],45,127)
 end
 
 function drawmap()
@@ -160,9 +176,13 @@ function drawenemydebuffs()
 	if(enemydebuff==2) then
 		local blocked_move=(((enemymove+1)%3)+1)
 		spr(move_sprite[blocked_move],105,27,2,2)
-	end
+	 end
 	spr(spr_texture,104,27,2,2)
 	circ(112,35,10,0)
+	if(view=="debuff") then
+	 circ(112,35,11,7)
+	 circ(112,35,12,7)
+	 end
 end
 
 function drawenemylife()
@@ -293,6 +313,7 @@ hand={}
 cardinhandselected=0
 discards_remaining=1
 poweupselected=1
+view="hand"
 
 function shuffledeck()
 deck_todraw={1,2,3,4,5,6,7,8,9}
@@ -317,7 +338,21 @@ function discardcard(card)
 	add(discardpile,card)
 end
 
-function currentcardselected()
+function currentpositionelected()
+	if(btnp(button_up) and view=="hand") then
+		view="debuff"
+		end
+	if(view=="debuff") then
+		if(btnp(button_down)) then
+		 view="hand"
+		 end
+		if(btn(button_accept)) then
+		 screen="showinfo"
+		else
+		 screen="game"
+		 end
+		return
+		end
 	if(btnp(button_right)) and cardinhandselected < 4 then
 		sfx(0)
 		cardinhandselected=cardinhandselected+1
@@ -512,6 +547,11 @@ powerups_texts={
 "gain 2 lives (max 9)"
 }
 
+defuffs_texts={
+"nothing, play free",
+"you can not play winning move"
+}
+
 enemies = {
 	[1] = {
 		mask=0,
@@ -567,6 +607,12 @@ function finishedscene()
 			screen="menu"
 		end
  end
+end
+-->8
+-- load infoscene
+function showinfo(text)
+cls(0)
+print(text)
 end
 __gfx__
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb77777777bbbbbbb00bbbbbb00bbbbbbbbbb00bbbbbbb00000000000000000000000000000000
