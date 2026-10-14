@@ -430,6 +430,21 @@ end
 
 function getrandomenemydebuff()
 	enemydebuffs = enemies[current_enemy].debuffs
+	enemydebuffs_probs=enemies[current_enemy].debuffs_probs
+	probs=0
+	-- sum all probs to create a probability pool
+	for i=1,#enemydebuffs_probs do
+  probs=probs+enemydebuffs_probs[i]
+  end
+ debuff_prob=flr(rnd(probs))
+ -- substract points until it reached 0 or below
+ -- to take the random debuff
+ for i=1,#enemydebuffs_probs do
+ 	debuff_prob=debuff_prob-enemydebuffs_probs[i]
+  if(debuff_prob<0) then
+   return enemydebuffs[i]
+   end
+  end 
 	return enemydebuffs[flr(rnd(#enemydebuffs))+1]
 end
 
@@ -502,19 +517,22 @@ enemies = {
 		mask=0,
 		face=0,
 		force=1,
-		debuffs={1}
+		debuffs={1},
+		debuffs_probs={100}
 		},
 	[2] = {
 		mask=32,
 		face=0,
 		force=2,
-		debuffs={1,2}
+		debuffs={1,2},
+		debuffs_probs={100,50}
 	},
 	[3] = {
 		mask=64,
 		face=0,
 		force=3,
-		debuffs={1,2}
+		debuffs={1,2},
+		debuffs_probs={100,100}
 	}
 }
 
