@@ -2,22 +2,22 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 function _init()
-version="0.0.10"
-screen = "menu"
---screen="initial"
-initial_lifes=9
-initial_enemylife=10
-position=user_positions[1]
-enemymove=1
-enemydebuff=1
-current_enemy=1
-last_boss=3
-still_alive=true
-powerup=""
-cls(0)
-palt(0,false) 
-palt(11,true)
-animations = {}
+	version="0.0.10"
+	screen = "menu"
+	--screen="initial"
+	initial_lifes=9
+	initial_enemylife=10
+	position=user_positions[1]
+	enemymove=1
+	enemydebuff=1
+	current_enemy=1
+	last_boss=3
+	still_alive=true
+	powerup=""
+	cls(0)
+	palt(0,false) 
+	palt(11,true)
+	animations = {}
 end
 
 function _draw()
@@ -34,7 +34,7 @@ function _draw()
 	if screen=="finishedgame" then
 		finishedscene(still_alive)
 		end
-	if screen=="showinfo" and view=="debuff" then
+	if screen=="showinfo" and position==user_positions[3] then
 		showinfo(defuffs_texts[enemydebuff])
 		end
 end
@@ -73,29 +73,29 @@ end
 -->8
 --dawing functions
 function drawhand(hand,x,y)
-	if cardinhandselected == 1 and view=="hand" then
+	if cardinhandselected == 1 and position==user_positions[2] then
 			drawcard(deck[hand[1]],35,80)
 			drawhint(deck[hand[1]].move+1,39,97)
 		else
 			drawcard(deck[hand[1]],35,90)
 		end
-	if cardinhandselected == 2 and view=="hand" then
+	if cardinhandselected == 2 and position==user_positions[2] then
 			drawcard(deck[hand[2]],55,80)
 			drawhint(deck[hand[2]].move+1,59,97)
 		else
 			drawcard(deck[hand[2]],55,90)
 		end
-	if cardinhandselected == 3 and view=="hand" then
+	if cardinhandselected == 3 and position==user_positions[2] then
 			drawcard(deck[hand[3]],75,80)
 			drawhint(deck[hand[3]].move+1,79,97)
 		else
 			drawcard(deck[hand[3]],75,90)
 		end
-	if cardinhandselected == 4 and view=="hand" then
+	if cardinhandselected == 4 and position==user_positions[2] then
 		print("\#0cards",105,106,7)
 		print("\#0"..#deck_todraw,113,113,7)
 		end
-	if cardinhandselected==0 and view=="hand" then
+	if cardinhandselected==0 and position==user_positions[2] then
   spr(36,14,106)
   if(btn(button_secondary)) then
    showdiscardpile()
@@ -104,7 +104,7 @@ function drawhand(hand,x,y)
 end
 
 function drawkeybinds()
- if (view=="debuff") then
+ if (position==user_positions[3]) then
   drawblackbox(2)
   print("❎ see",1,117,7)
   print("⬇️ back",1,123,7)
@@ -180,6 +180,8 @@ function drawenemy(enemy)
 	drawenemylife()
 	--drawing debuffs
 	drawenemydebuffs()
+	--animation changing move
+	drawchangeenemymove()
 end
 
 function drawenemymove()
@@ -198,7 +200,7 @@ function drawenemydebuffs()
 	 end
 	spr(spr_texture,105,28,2,2)
 	circ(112,35,10,0)
-	if(view=="debuff") then
+	if(position==user_positions[3]) then
 	 circ(112,35,11,7)
 	 circ(112,35,12,7)
 	 end
@@ -257,10 +259,22 @@ function drawlosinglive()
 					spr(10,110,local_y,2,2)
 					print("-"..enemies[current_enemy].force
 									,114,local_y+8)
-			else
-				is_losing_lives="false"
-				start_losing_lives_animation="false"
 			end
+		end
+end
+
+function drawchangeenemymove()
+	 local timer=getanimtimer("drawchangeenemymove")
+	 if(timer!=nil) then
+			local local_x = 10 - (timer%4)
+			-- move
+			circfill(15,35,10,6)
+			spr(12,local_x,27,2,2,false,true)
+		 circ(15,35,10,0)
+		 -- debuff
+		 circfill(112,35,10,6)
+		 spr(14,105,28,2,2)
+		 circ(112,35,10,0)
 		end
 end
 
@@ -332,7 +346,6 @@ hand={}
 cardinhandselected=0
 discards_remaining=1
 poweupselected=1
-view="hand"
 
 function shuffledeck()
 deck_todraw={1,2,3,4,5,6,7,8,9}
@@ -358,12 +371,12 @@ function discardcard(card)
 end
 
 function currentpositionelected()
-	if(btnp(button_up) and view=="hand" and screen=="game") then
-		view="debuff"
+	if(btnp(button_up) and position==user_positions[2] and screen=="game") then
+		position=user_positions[3]
 		end
-	if(view=="debuff") then
+	if(position==user_positions[3]) then
 		if(btnp(button_down)) then
-		 view="hand"
+		 position=user_positions[2]
 		 end
 		if(btn(button_accept)) then
 		 screen="showinfo"
@@ -488,6 +501,7 @@ function calculatewinmove(user,enemy)
 end
 
 function getrandomenemymove()
+ add(animations,{timer=10,name="drawchangeenemymove"})
 	return flr(rnd(3)) + 1
 end
 
@@ -544,7 +558,8 @@ button_secondary=4
 
 user_positions={
 "init",
-"hand"
+"hand",
+"debuffs"
 }
 
 deck={
@@ -644,22 +659,22 @@ cls(0)
 print(text)
 end
 __gfx__
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb77777777bbbbbbb00bbbbbb00bbbbbbbbbb00bbbbbbb00000000000000000000000000000000
-bbbbbbbbbbbbbbbbbbbbb0bbb0bbbbbbbbbbbbb0bbbbbbbbbbb7777777777bbbbb0ee0bbbb0ee0bbbbbbbb0880bbbbbb00000000000000000000000000000000
-bbbbbb00b00bbbbbbbbbbc0bbcbbbbbbbbbbb00c00bbbbbbbb777777777777bbb0eeee0bb0eeee0bbbbbbb0880bbbbbb00000000000000000000000000000000
-bbbb001c0cc0bbbbbbbbbc0b0cbbbbbbbbbb0c010c0bbbbbbb777777777777bb0eeeeee00eeeeee0bbbbb088880bbbbb00000000000000000000000000000000
-bbb0cc0c1cc0bbbbbbbbb1cb0cbbbbbbbbb00101010bbbbbbb777777777777bb0eeeeeeeeeeeeee0bbbbb088880bbbbb00000000000000000000000000000000
-bbb0cc0c1cc0bbbbbbbbb0c0c0bbbbbbbb0c0101010bbbbbbb777777777777bb0eeeeeeeeeeeeee0bbbb08888880bbbb00000000000000000000000000000000
-bbb0cccc0000bbbbbbbbb010c0bbbbbbbb010101010b0bbbbb777777777777bb0eeeeeeeeeeeeee0bbb0888888880bbb00000000000000000000000000000000
-bbb00ccc0ccc0bbbbbbb0c011cbbbbbbbb010ccccc0c1bbbbb777777777777bb0eeeeeeeeeeeeee0bbb0888888880bbb00000000000000000000000000000000
-bbb01000001c0bbbbbbb01c0ccbbbbbbbb01cccccccc0bbbbb777777777777bb0eeeeeeeeeeeeee0bb088888888880bb00000000000000000000000000000000
-bbb01ccccccc0bbbbbbb0c011cbbbbbbbbb0ccccccc0bbbbbb777777777777bbb0eeeeeeeeeeee0bbb088888888880bb00000000000000000000000000000000
-bbb011ccccc0bbbbbbbb011cccbbbbbbbbb0cccccc10bbbbbb777777777777bbbb0eeeeeeeeee0bbbb088888888880bb00000000000000000000000000000000
-bbbb0111110bbbbbbbbb01ccc0bbbbbbbbbb0cccc10bbbbbbb777777777777bbbbb0eeeeeeee0bbbbb088888888880bb00000000000000000000000000000000
-bbbb0ccccc0bbbbbbbbbb01110bbbbbbbbbbb0ccc0bbbbbbbb777777777777bbbbbb0eeeeee0bbbbbb088888888880bb00000000000000000000000000000000
-bbbb000000bbbbbbbbbbb00000bbbbbbbbbbb01110bbbbbbbb777777777777bbbbbbb0eeee0bbbbbbbb0888888880bbb00000000000000000000000000000000
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb00000bbbbbbbbb7777777777bbbbbbbbb0ee0bbbbbbbbbb08888880bbbb00000000000000000000000000000000
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb77777777bbbbbbbbbbb00bbbbbbbbbbbb000000bbbbb00000000000000000000000000000000
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb77777777bbbbbbb00bbbbbb00bbbbbbbbbb00bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbb0bbb0bbbbbbbbbbbbb0bbbbbbbbbbb7777777777bbbbb0ee0bbbb0ee0bbbbbbbb0880bbbbbbbbbb11011011bbbbbbbbbbbbbbbbbbbb
+bbbbbb00b00bbbbbbbbbbc0bbcbbbbbbbbbbb00c00bbbbbbbb777777777777bbb0eeee0bb0eeee0bbbbbbb0880bbbbbbbb10dd1dd1dd1bbbbbbbbbbbbbbbbbbb
+bbbb001c0cc0bbbbbbbbbc0b0cbbbbbbbbbb0c010c0bbbbbbb777777777777bb0eeeeee00eeeeee0bbbbb088880bbbbbb110dd1dd1dd1bbbbbbbb000000bbbbb
+bbb0cc0c1cc0bbbbbbbbb1cb0cbbbbbbbbb00101010bbbbbbb777777777777bb0eeeeeeeeeeeeee0bbbbb088880bbbbbb110111111111bbbbbbb07f4fff0bbbb
+bbb0cc0c1cc0bbbbbbbbb0c0c0bbbbbbbb0c0101010bbbbbbb777777777777bb0eeeeeeeeeeeeee0bbbb08888880bbbbb110110110110bbbbbb07f4feeef0bbb
+bbb0cccc0000bbbbbbbbb010c0bbbbbbbb010101010b0bbbbb777777777777bb0eeeeeeeeeeeeee0bbb0888888880bbbb000000ddddd1bbbbb07f47eeffef0bb
+bbb00ccc0ccc0bbbbbbb0c011cbbbbbbbb010ccccc0c1bbbbb777777777777bb0eeeeeeeeeeeeee0bbb0888888880bbbb0111101ddddd1bbbb0f47effeffe0bb
+bbb01000001c0bbbbbbb01c0ccbbbbbbbb01cccccccc0bbbbb777777777777bb0eeeeeeeeeeeeee0bb088888888880bbb01dddd0001dd1bbbb0f4fefffeee0bb
+bbb01ccccccc0bbbbbbb0c011cbbbbbbbbb0ccccccc0bbbbbb777777777777bbb0eeeeeeeeeeee0bbb088888888880bbb01dddd111ddd1bbbb0e4eeeeee440bb
+bbb011ccccc0bbbbbbbb011cccbbbbbbbbb0cccccc10bbbbbb777777777777bbbb0eeeeeeeeee0bbbb088888888880bbb01dddddddddd1bbbbb00eeeee4e0bbb
+bbbb0111110bbbbbbbbb01ccc0bbbbbbbbbb0cccc10bbbbbbb777777777777bbbbb0eeeeeeee0bbbbb088888888880bbb01ddddddddd10bbbbbbb0000000bbbb
+bbbb0ccccc0bbbbbbbbbb01110bbbbbbbbbbb0ccc0bbbbbbbb777777777777bbbbbb0eeeeee0bbbbbb088888888880bbbb01111111110bbbbbbbbbbbbbbbbbbb
+bbbb000000bbbbbbbbbbb00000bbbbbbbbbbb01110bbbbbbbb777777777777bbbbbbb0eeee0bbbbbbbb0888888880bbbbbb000000000bbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb00000bbbbbbbbb7777777777bbbbbbbbb0ee0bbbbbbbbbb08888880bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb77777777bbbbbbbbbbb00bbbbbbbbbbbb000000bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 00000000b00000000000000bb00bb00bbbbbbbbb00000000bbbb66666666bbbbbbbb76767676bbbb000000000000000000000000000000000000000000000000
 444499f4044664466446644008800880bbbaabbb00000000bbb6787878786bbbbbb60b0b0b0b7bbb000000000000000000000000000000000000000000000000
 44444444041661166aa66a4008888880bbaaaabb00000000bb678787878786bbbb70b0b0b0b0b6bb000000000000000000000000000000000000000000000000
