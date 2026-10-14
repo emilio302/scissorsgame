@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 function _init()
-	version="0.0.10"
+	version="0.0.11"
 	screen = "menu"
 	--screen="initial"
 	initial_lifes=9
@@ -267,7 +267,7 @@ function drawchangeenemymove()
 	 local timer=getanimtimer("drawchangeenemymove")
 	 if(timer!=nil) then
 			local local_x = 10 - (timer%4)
-			-- move
+		 -- move
 			circfill(15,35,10,6)
 			spr(12,local_x,27,2,2,false,true)
 		 circ(15,35,10,0)
