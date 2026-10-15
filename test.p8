@@ -166,14 +166,25 @@ end
 function drawenemy(enemy)
 	x=32
 	y=15
-	--drawing arms
-	armposition=y+(6+5*(flr(time() * 2) % 2))
-	sspr(96,32,16,32,x-16,armposition,32,64)
-	sspr(96,32,16,32,x+48,armposition,32,64,true)
-	--drawing face
-	headposition=(2*(flr(time() * 2) % 2))
-	sspr(enemies[enemy].mask,32,32,16,x,y+headposition,64,32)
-	sspr(enemies[enemy].face,48,32,16,x,y+headposition+32,64,32)
+	local timer=getanimtimer("enemylosinglives")
+ if(timer!=nil) then
+  local anim_x = x - (timer%4)
+  --drawing arms
+  sspr(96,32,16,32,anim_x-16,y,32,64)
+		sspr(96,32,16,32,anim_x+48,y,32,64,true)
+		--drawing face
+		sspr(enemies[enemy].mask,32,32,16,anim_x,y,64,32)
+		sspr(enemies[enemy].face,48,32,16,anim_x,y+32,64,32)
+ else
+		--drawing arms
+		armposition=y+(6+5*(flr(time() * 2) % 2))
+		sspr(96,32,16,32,x-16,armposition,32,64)
+		sspr(96,32,16,32,x+48,armposition,32,64,true)
+		--drawing face
+		headposition=(2*(flr(time() * 2) % 2))
+		sspr(enemies[enemy].mask,32,32,16,x,y+headposition,64,32)
+		sspr(enemies[enemy].face,48,32,16,x,y+headposition+32,64,32)
+		end
 	--drawing moves
 	drawenemymove()
 	--drawing life
@@ -207,9 +218,14 @@ function drawenemydebuffs()
 end
 
 function drawenemylife()
+ local timer=getanimtimer("enemylosinglives")
+ if(timer!=nil) then
+  pal(8,1)
+ end
 	for i=1,enemylife do
 		spr(35,10+(i*9),5,1,1)
 	end
+	pal(8,8)
 end
 
 function drawtable()
@@ -254,6 +270,10 @@ end
 function drawlosinglive()
 	 local timer=getanimtimer("losinglives")
 	 if(timer!=nil) then
+	  if(timer<16 and timer > 12) then
+			 cls(8)
+			 return
+			 end
 			local local_y = 75 - (timer)
 			if(local_y<75) then
 					spr(10,110,local_y,2,2)
@@ -428,6 +448,7 @@ function playcard()
 	end
 	if(won=="win") then
 		enemylife=enemylife-cardplayed.value
+		add(animations,{timer=10,name="enemylosinglives"})
 	elseif(won=="lose") then
 		lifes=lifes-enemies[current_enemy].force
 	 sfx(1)
@@ -591,9 +612,9 @@ powerups_texts={
 }
 
 defuffs_texts={
-"nothing, play free",
-"you can not play winning move",
-"enemy can not lose lifes"
+"nothing\nplay free",
+"avoid losing\nwinning move can not be played",
+"shield\nenemy can not lose lifes"
 }
 
 enemies = {
@@ -656,8 +677,9 @@ end
 -- load infoscene
 function showinfo(text)
 cls(0)
-print(text)
+print(text,10,60)
 end
+
 __gfx__
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb77777777bbbbbb000000000000bbbbbbbbb00bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 bbbbbbbbbbbbbbbbbbbbb0bbb0bbbbbbbbbbbbb0bbbbbbbbbbb7777777777bbbb00ee000000ee00bbbbbbb0880bbbbbbbbbb11011011bbbbbbbbbbbbbbbbbbbb
