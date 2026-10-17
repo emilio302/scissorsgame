@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 function _init()
-	version="0.0.13"
+	version="0.1.0"
 	screen = "menu"
 	--screen="initial"
 	initial_lifes=9
@@ -11,13 +11,14 @@ function _init()
 	enemymove=1
 	enemydebuff=1
 	current_enemy=1
+	bag_max_size=6
 	last_boss=3
 	still_alive=true
 	powerup=""
 	cls(0)
 	palt(0,false) 
 	palt(11,true)
-	animations = {}
+	animations={}
 	music(0)
 end
 
@@ -93,8 +94,7 @@ function drawhand(hand,x,y)
 			drawcard(deck[hand[3]],75,90)
 		end
 	if cardinhandselected == 4 and position==user_positions[2] then
-		print("\#0cards",105,106,7)
-		print("\#0"..#deck_todraw,113,113,7)
+		print("\#0"..#deck_todraw.." left",95,82,7)
 		end
 	if cardinhandselected==0 and position==user_positions[2] then
   spr(36,14,106)
@@ -107,25 +107,31 @@ end
 function drawkeybinds()
  if (position==user_positions[3]) then
   drawblackbox(2)
-  print("❎ see",1,117,7)
+  print(button_accept_s.." see",1,117,7)
   print("⬇️ back",1,123,7)
+  return
+  end
+ if (position==user_positions[4]) then
+  drawblackbox(2)
+  print(button_accept_s.." use",1,117,7)
+  print("⬆️ back",1,123,7)
   return
   end
 	if (cardinhandselected>0 and cardinhandselected <4) then
   drawblackbox(3)
-  print("❎ play",1,111,7)
-  print("🅾️ dis ("..discards_remaining..")",1,117,7)
-  print("⬆️ debuff",1,123,7)
+  print(button_accept_s.." play",1,111,7)
+  print(button_secondary_s.." dis ("..discards_remaining..")",1,117,7)
+  print("⬇️ bag",1,123,7)
   end
  if cardinhandselected==0 then
  	drawblackbox(2)
-  print("🅾️ show",1,117,7)
+  print(button_secondary_s.." show",1,117,7)
   print("⬆️ debuff",1,123,7)
   end
 end
 
 function drawblackbox(rows)
- box_y={122,116,110}
+ box_y={122,116,110,104}
  rectfill(0,box_y[rows],45,127)
 end
 
@@ -240,11 +246,31 @@ function drawtable()
 	drawdrawpile()
 end
 
+function drawbag()
+ rectfill(62,116,125,125,9)
+ rect(61,115,126,126,0)
+ print("\#0bag",115,109,7)
+ for i=1,#bag do
+  local local_x=55+(i*10)
+ 	spr(powerups_sprites[bag[i]],local_x,117)
+ end
+ for i=1,6-#bag do
+  local local_x=127-(i*10)
+ 	line(local_x-1,120,local_x+4,120)
+ 	line(local_x-1,121,local_x+4,121)
+ end
+ if position==user_positions[4] then
+  local local_x = 54
+  local_x = local_x+bag_item_selected*10
+  rect(local_x,116,local_x+9,125,7)
+ end
+end
+
 function drawdrawpile()
 	if #deck_todraw == 0 then
-		spr(40,105,90,2,2)
+		spr(40,100,90,2,2)
 	else
-		spr(38,105,90,2,2)
+		spr(38,100,90,2,2)
 	end
 end
 
@@ -302,12 +328,19 @@ end
 function drawselectpowerup()
  random_powerup_1=1
  random_powerup_2=2
+ random_powerup_3=2
 	rect(6,16,21,31,7)
 	spr(powerups_sprites[random_powerup_1],10,20)
-	print(powerups_texts[random_powerup_1],25,20)
+	print(powerups_texts[random_powerup_1][2],25,25)
+
 	rect(6,46,21,61,7)
 	spr(powerups_sprites[random_powerup_2],10,50)
-	print(powerups_texts[random_powerup_2],25,50)
+	print(powerups_texts[random_powerup_2][2],25,55)
+	
+	rect(6,76,21,91,7)
+	spr(powerups_sprites[random_powerup_3],10,80)
+	print(powerups_texts[random_powerup_3][2],25,85)
+	
 	if(poweupselected==1) then
 	 powerup=powerups[random_powerup_1]
 	 rect(4,14,110,33,7)
@@ -316,7 +349,16 @@ function drawselectpowerup()
 	 powerup=powerups[random_powerup_2]
 	 rect(4,44,110,63,7)
 	 end
- print("❎ select",1,123)
+	if(poweupselected==3) then
+	 powerup=powerups[random_powerup_3]
+	 rect(4,74,110,93,7)
+	 end
+	 
+	print("\#0"..powerups_texts[random_powerup_1][1],25,14)
+	print("\#0"..powerups_texts[random_powerup_2][1],25,44)
+	print("\#0"..powerups_texts[random_powerup_3][1],25,74)
+ 
+ print(button_accept_s.." select",1,123)
 end
 -->8
 --load main scene
@@ -328,6 +370,7 @@ drawtable()
 drawhand(hand)
 drawlife(lifes)
 drawkeybinds()
+drawbag()
 end
 
 function initialsetup()
@@ -356,7 +399,7 @@ if(intro_y<15) then
 		print("welcome to",20,80)
 		print("sicissors card",20,92)
 		print("a rock and paper game",20,104)
-		print("please press ❎ button",20,116)
+		print("please press "..button_accept_s.." button",20,116)
 		print(version,105,0)
 	end
 end
@@ -365,9 +408,11 @@ end
 deck_todraw={}
 discardpile={}
 hand={}
+bag={}
 cardinhandselected=0
 discards_remaining=1
 poweupselected=1
+bag_item_selected=1
 
 function shuffledeck()
 deck_todraw={1,2,3,4,5,6,7,8,9}
@@ -395,6 +440,26 @@ end
 function currentpositionelected()
 	if(btnp(button_up) and position==user_positions[2] and screen=="game") then
 		position=user_positions[3]
+		end
+	if(btnp(button_down) and position==user_positions[2] and screen=="game") then
+		position=user_positions[4]
+		end
+	if(position==user_positions[4]) and screen=="game" then
+		if(btnp(button_up)) then
+			position=user_positions[2]
+			end
+		if(btnp(button_right) and bag_item_selected<#bag) then
+			bag_item_selected+=1
+			end
+		if(btnp(button_left) and bag_item_selected>1) then
+			bag_item_selected-=1
+			end
+		if(btnp(button_accept)) then
+		 local bag_item = bag[bag_item_selected]
+		 activatebagitem(bag_item)
+		 deli(bag,bag_item_selected)
+		 end
+		return
 		end
 	if(position==user_positions[3]) then
 		if(btnp(button_down)) then
@@ -464,6 +529,16 @@ function playcard()
 	enemymove=getrandomenemymove()
 	enemydebuff=getrandomenemydebuff()
 	checkendhand()
+end
+
+function activatebagitem(bag_item)
+ if(bag_item==2) then
+  lifes+=2
+	 if(lifes>initial_lifes) then
+	  lifes=initial_lifes
+	  end
+	 return
+ end
 end
 
 function checkendhand()
@@ -554,6 +629,8 @@ end
 function setupnewround()
 	cardinhandselected=0
 	current_enemy+=1
+	bag_item_selected=1
+	poweupselected=1
 	enemylife=initial_enemylife
 	enemymove=getrandomenemymove()
 	enemydebuff=getrandomenemydebuff()
@@ -566,10 +643,7 @@ function setupnewround()
 	 discards_remaining+=1
 	 end
 	if(powerup==powerups[2]) then
-	 lifes+=2
-	 if(lifes>initial_lifes) then
-	  lifes=initial_lifes
-	  end
+	 add(bag,2)
 	end
 	powerup=""
 end
@@ -579,13 +653,16 @@ button_right=1
 button_left=0
 button_up=2
 button_down=3
-button_accept=5
-button_secondary=4
+button_accept=4
+button_accept_s="🅾️"
+button_secondary=5
+button_secondary_s="❎"
 
 user_positions={
 "init",
 "hand",
-"debuffs"
+"debuffs",
+"bag"
 }
 
 deck={
@@ -612,14 +689,18 @@ powerups={
 }
 
 powerups_texts={
-"gain 1 discard",
-"gain 2 lives (max 9)"
+{"+1 discard","gain 1 discard"},
+{"live potion","gain 2 lives (max 9)"}
 }
 
 defuffs_texts={
-"nothing\nplay free",
-"avoid losing\nwinning move can not be played",
-"shield\nenemy can not lose lifes"
+"nothing\n\n"..
+ "play free",
+"avoid losing\n\n"..
+ "winning move can not be \n"
+ .."played",
+"shield\n\n"..
+	"enemy can not lose lifes"
 }
 
 enemies = {
@@ -658,12 +739,12 @@ function finishedscene()
  cls(0)
  if(current_enemy==last_boss and still_alive) then
 		print("you won!!!!",44,40,7)
-		print("🅾️ return to main menu",31,110,7)
+		print(button_secondary_s.." return to main menu",31,110,7)
 		if(btnp(button_secondary))then
 			screen="menu"
 		end
  elseif(still_alive) then
- 	if(btnp(button_down) and poweupselected <2) then
+ 	if(btnp(button_down) and poweupselected <3) then
  	 poweupselected+=1
  	 end
  	if(btnp(button_up) and poweupselected >1) then
@@ -672,7 +753,7 @@ function finishedscene()
  	drawselectpowerup()
  else
  	print("you lost...",42,64,7)
- 	print("🅾️ restart?",42,110)
+ 	print(button_secondary_s.." restart?",42,110)
  	if(btnp(button_secondary))then
 			screen="menu"
 		end
