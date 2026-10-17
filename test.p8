@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 function _init()
-	version="0.1.0"
+	version="0.1.1"
 	screen = "menu"
 	--screen="initial"
 	initial_lifes=9
@@ -20,6 +20,7 @@ function _init()
 	palt(11,true)
 	animations={}
 	music(0)
+	add(animations,{timer=30,name="intro"})
 end
 
 function _draw()
@@ -45,15 +46,21 @@ function _update()
  if btnp(button_accept) and screen=="menu" then
 		screen="initial"
 	end
-	if btnp(button_accept) and screen=="finishedgame" and current_enemy<last_boss then
-		if(still_alive) then
-			setupnewround()
-			screen="game"
+	if btnp(button_accept) and screen=="finishedgame" then
+		if current_enemy<last_boss then
+		 if(still_alive) then
+				setupnewround()
+				screen="game"
+			else
+			 add(animations,{timer=30,name="intro"})
+				screen="menu"
+			end
 		else
-			screen="menu"
+		 add(animations,{timer=30,name="intro"})
+		 screen="menu"
 		end
 	end
- if(screen=="game" or "showinfo") then
+ if(screen=="game" or screen=="showinfo") then
 	 currentpositionelected()
  end
  --animations handler
@@ -388,14 +395,18 @@ music(-1)
 end
 -->8
 --load intro
-intro_y = -30
 function loadintro()
+local intro_y = 15
+local timer=getanimtimer("intro")
 cls(0)
+
+if(timer!=nil) then
+	intro_y=intro_y-(timer*2)
+	end
+	
 sspr(0,96,32,32,35,intro_y,64,64)
-if(intro_y<15) then
-		intro_y=intro_y+((flr(time()*10)))
-	else
-	 intro_y=15
+
+if(intro_y>14) then
 		print("welcome to",20,80)
 		print("sicissors card",20,92)
 		print("a rock and paper game",20,104)
@@ -752,9 +763,6 @@ function finishedscene()
  if(current_enemy==last_boss and still_alive) then
 		print("you won!!!!",44,40,7)
 		print(button_secondary_s.." return to main menu",31,110,7)
-		if(btnp(button_secondary))then
-			screen="menu"
-		end
  elseif(still_alive) then
  	if(btnp(button_down) and poweupselected <3) then
  	 poweupselected+=1
