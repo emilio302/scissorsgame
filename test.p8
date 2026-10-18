@@ -7,6 +7,7 @@ function _init()
 	--screen="initial"
 	initial_lifes=9
 	initial_enemylife=10
+	initial_discards=1
 	position=user_positions[1]
 	enemymove=1
 	enemydebuff=1
@@ -391,6 +392,7 @@ current_enemy=1
 bag={}
 enemylife=initial_enemylife
 lifes=initial_lifes
+round_discards=initial_discards
 shuffledeck()
 getcard()
 getcard()
@@ -430,6 +432,7 @@ cardinhandselected=0
 discards_remaining=1
 poweupselected=1
 bag_item_selected=1
+round_discards=1
 
 function shuffledeck()
 deck_todraw={1,2,3,4,5,6,7,8,9}
@@ -667,7 +670,7 @@ function setupnewround()
 	getcard()
 	getcard()
 	if(powerup==powerups[1]) then
-	 discards_remaining+=1
+	 round_discards+=1
 	 end
 	if(powerup==powerups[2]) then
 	 add(bag,2)
@@ -676,6 +679,7 @@ function setupnewround()
 	 add(bag,3)
 	end
 	powerup=""
+	discards_remaining=round_discards
 end
 -->8
 --constants
