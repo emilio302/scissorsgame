@@ -725,7 +725,7 @@ powerups={
 
 powerups_texts={
  {"+1 discard",
- "gain 1 discard"},
+ "gain 1 per round"},
  {"live potion",
  "gain 2 lives (max 9)"},
  {"stop",
