@@ -339,9 +339,6 @@ function drawchangeenemymove()
 end
 
 function drawselectpowerup()
- random_powerup_1=1
- random_powerup_2=4
- random_powerup_3=3
 	rect(6,16,21,31,7)
 	spr(powerups_sprites[random_powerup_1],10,20)
 	print(powerups_texts[random_powerup_1][2],25,25)
@@ -393,6 +390,7 @@ bag={}
 enemylife=initial_enemylife
 lifes=initial_lifes
 round_discards=initial_discards
+extra_power=0
 shuffledeck()
 getcard()
 getcard()
@@ -575,9 +573,11 @@ end
 function checkendhand()
 	if(lifes<1) then
 		still_alive=false
+		get3randompowerup()
 		screen="finishedgame"
 	end
 	if(enemylife<1) then
+	 get3randompowerup()
 		screen="finishedgame"
 	end
 end
@@ -655,6 +655,25 @@ function getrandomenemydebuff()
    end
   end 
 	return enemydebuffs[flr(rnd(#enemydebuffs))+1]
+end
+
+function get3randompowerup()
+ local local_powerups={}
+ local to_return = {}
+ 
+ for i=1,#powerups do
+  add(local_powerups,i)
+ end
+ 
+ for i=1,3 do
+  local powerup=flr(rnd(#local_powerups))+1
+  add(to_return,local_powerups[powerup])
+  deli(local_powerups,powerup)
+ end
+ 
+ random_powerup_1=to_return[1]
+ random_powerup_2=to_return[2]
+ random_powerup_3=to_return[3]
 end
 
 function setupnewround()
