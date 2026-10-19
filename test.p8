@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 function _init()
-	version="0.1.2"
+	version="0.1.3"
 	screen = "menu"
 	--screen="initial"
 	initial_lifes=9
