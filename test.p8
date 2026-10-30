@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 function _init()
-	version="0.2.0"
+	version="0.2.1"
 	screen = "menu"
 	--screen="initial"
 	initial_lifes=9
@@ -564,7 +564,7 @@ function playcard()
 				card_damage=0
 			end
 		end
-		local damage_deal=card_damage-extra_power
+		local damage_deal=card_damage+extra_power
 		if(damage_deal>0) then
 		 enemylife=enemylife-damage_deal
 		 sfx(2)
@@ -802,19 +802,25 @@ powerups_texts={
 }
 
 defuffs_texts={
+--1
 "nothing\n\n"..
- "play free",
+ "play free"
+--2
 "avoid losing\n\n"..
  "winning move can not be \n"
  .."played",
+--3
 "shield\n\n"..
 	"enemy can not lose lifes",
+--4
 "spines\n\n"..
 	"if you won\n"..
 	"you will lose 1 live",
+--5
 "powerless\n\n"..
 	"your cards\n"..
 	"make -1 damage",
+--6
 "no discards\n\n"..
 	"you cannot use\n"
 	.."discard action\n"
@@ -825,8 +831,8 @@ enemies = {
 		mask=0,
 		face=0,
 		force=1,
-		debuffs={1,3,5,6},
-		debuffs_probs={75,15,15,25}
+		debuffs={1,3,5},
+		debuffs_probs={75,30,15}
 --		debuffs={5},
 --		debuffs_probs={100}
 		},
