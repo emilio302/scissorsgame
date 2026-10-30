@@ -1,4 +1,5 @@
-Scissor card game
-A rock and paper game
+# Scissor card game
 
-This is a gem for PICO-8 developed by Emilio Moreno Molina
+## A rock and paper game
+
+This is a game for PICO-8 developed by Emilio Moreno Molina
