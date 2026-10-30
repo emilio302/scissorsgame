@@ -804,7 +804,7 @@ powerups_texts={
 defuffs_texts={
 --1
 "nothing\n\n"..
- "play free"
+ "play free",
 --2
 "avoid losing\n\n"..
  "winning move can not be \n"
