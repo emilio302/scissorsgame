@@ -8,6 +8,7 @@ function _init()
 	initial_lifes=9
 	initial_enemylife=10
 	initial_discards=1
+	initial_bag={}
 	position=user_positions[1]
 	enemymove=1
 	enemydebuff=1
@@ -388,6 +389,15 @@ function drawselectpowerup()
 	 powerup=powerups[random_powerup_3]
 	 rect(4,74,110,93,7)
 	 end
+	if(#bag>5) then 
+		print("bag is full!!!",25,100)
+		if(
+		 powerup==powerups[2] or 
+		 powerup==powerups[3] or 
+		 powerup==powerups[5]) then
+			print("\#8item wont be added",25,107)
+		 end
+		end
 	 
 	print("\#0"..powerups_texts[random_powerup_1][1],25,14)
 	print("\#0"..powerups_texts[random_powerup_2][1],25,44)
@@ -411,7 +421,7 @@ end
 function initialsetup()
 still_alive=true
 current_enemy=1
-bag={}
+bag=initial_bag
 enemylife=initial_enemylife
 lifes=initial_lifes
 round_discards=initial_discards
@@ -739,20 +749,23 @@ function setupnewround()
 	getcard()
 	getcard()
 	getcard()
+	--if bag is full do not add it
+	if(#bag<6) then
+	 if(powerup==powerups[2]) then
+		 add(bag,2)
+			end
+		if(powerup==powerups[3]) then
+		 add(bag,3)
+			end
+		if(powerup==powerups[5]) then
+	 	add(bag,5)
+			end
+	end
 	if(powerup==powerups[1]) then
 	 round_discards+=1
 	 end
-	if(powerup==powerups[2]) then
-	 add(bag,2)
-	end
-	if(powerup==powerups[3]) then
-	 add(bag,3)
-	end
 	if(powerup==powerups[4]) then
 	 extra_power+=1
-	end
- if(powerup==powerups[5]) then
-	 add(bag,5)
 	end
 	powerup=""
 	position=user_positions[2]
