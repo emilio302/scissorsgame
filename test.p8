@@ -599,6 +599,10 @@ function playcard()
 			end
 		end
 		local damage_deal=card_damage+extra_power
+		if(enemydebuff==3) then
+		 sfx(effects_sfx["shield"])
+			damage_deal=0
+		end
 		if(damage_deal>0) then
 		 enemylife=enemylife-damage_deal
 		 sfx(effects_sfx["enemy_damage"])
@@ -684,24 +688,15 @@ function calculatewinmove(user,enemy)
 		if(enemydebuff==2) then
 			return "invalid"
 		end
-		if(enemydebuff==3) then
-			return "tie"
-		end
 		return "win"
 	elseif(user==2 and enemy==3) then
 		if(enemydebuff==2) then
 			return "invalid"
 		end
-		if(enemydebuff==3) then
-			return "tie"
-		end
 		return "win"
 	elseif(user==3 and enemy==1) then
 		if(enemydebuff==2) then
 			return "invalid"
-		end
-		if(enemydebuff==3) then
-			return "tie"
 		end
 		return "win"
 	else
