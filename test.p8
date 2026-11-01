@@ -14,7 +14,6 @@ function _init()
 	enemydebuff=0
 	current_enemy=1
 	bag_max_size=6
-	last_boss=3
 	still_alive=true
 	immune=false
 	powerup=""
@@ -56,7 +55,7 @@ function _update()
 		screen="initial"
 	end
 	if btnp(button_accept) and screen=="finishedgame" then
-		if current_enemy<last_boss then
+		if current_enemy<#enemies then
 		 if(still_alive) then
 				setupnewround()
 				change_to_game=true
@@ -517,7 +516,7 @@ function currentpositionelected()
 		if(btnp(button_accept) and screen=="game") then
 		 local bag_item = bag[bag_item_selected]
 		 if(enemydebuff==3 and bag_item==5) then
-   		sfx(3)
+   		sfx(effects_sfx["not_allowed"])
 				return
 		 end
 		 deli(bag,bag_item_selected)
@@ -537,11 +536,11 @@ function currentpositionelected()
 		return
 		end
 	if(btnp(button_right)) and cardinhandselected < 4 then
-		sfx(0)
+		sfx(effects_sfx["card_move"])
 		cardinhandselected=cardinhandselected+1
 		end
 	if(btnp(button_left)) and cardinhandselected > 0 then
-		sfx(0)
+		sfx(effects_sfx["card_move"])
 		cardinhandselected=cardinhandselected-1
 		end
 	if btnp(button_accept) and cardinhandselected>0 and cardinhandselected <4  and screen=="game" then
@@ -549,10 +548,10 @@ function currentpositionelected()
 		end
 	if btnp(button_secondary) and cardinhandselected>0 and cardinhandselected <4 then
 		if(enemydebuff==6 or discards_remaining==0) then
-   		sfx(3)
+   		sfx(effects_sfx["not_allowed"])
 		elseif(discards_remaining>0) then
 		 discards_remaining=discards_remaining-1
-		 sfx(4)
+		 sfx(effects_sfx["dicard"])
 		 discardcard(deli(hand,cardinhandselected))
 	  getcard()
 	  end
@@ -577,7 +576,7 @@ function playcard()
 		local card3 = deck[hand[3]]
 		--this avoids block hand
 		if(card1.move!=card2.move or card1.move!=card3.move) then
-			sfx(3)
+			sfx(effects_sfx["not_allowed"])
 			return
 		end
 		won="lose"
@@ -586,7 +585,7 @@ function playcard()
 	 if(enemydebuff==4) then
 	  if(immune==true) then
 	  	immune=false
-	  	sfx(5)
+	  	sfx(effects_sfx["shield"])
 	  else
 	   lifes-=1
 	   losing_lives_amount=1
@@ -602,17 +601,17 @@ function playcard()
 		local damage_deal=card_damage+extra_power
 		if(damage_deal>0) then
 		 enemylife=enemylife-damage_deal
-		 sfx(2)
+		 sfx(effects_sfx["enemy_damage"])
 		 add(animations,{timer=10,name="enemylosinglives"})	
 		end
 	elseif(won=="lose") then
 	 if(immune==true) then
 	  	immune=false
-	  	sfx(5)
+	  	sfx(effects_sfx["shield"])
 	 else
 	 	lifes=lifes-enemies[current_enemy].force
 	 	losing_lives_amount=enemies[current_enemy].force
-	 	sfx(1)
+	 	sfx(effects_sfx["lose_lifes"])
 	 	add(animations,{timer=15,name="losinglives"})
 	  end
 	end
@@ -636,7 +635,7 @@ function activatebagitem(bag_item)
 	 return
  end
  if(bag_item==5) then
- 	sfx(2)
+ 	sfx(effects_sfx["enemy_damage"])
 		add(animations,{timer=10,name="enemylosinglives"})
   enemylife-=2
   checkendhand()
@@ -927,11 +926,22 @@ move_sprite={0,2,4}
 debuffs_sprites={160,162,164,166,168,170}
 
 powerups_sprites={144,145,146,147,148,149}
+
+--sfx
+effects_sfx={
+card_move=0,
+lose_lifes=1,
+enemy_damage=2,
+not_allowed=3,
+dicard=4,
+shield=5,
+liveup=6
+}
 -->8
 --load finishedgame scene
 function finishedscene()
  cls(0)
- if(current_enemy==last_boss and still_alive) then
+ if(current_enemy==#enemies and still_alive) then
 		print("you won!!!!",44,40,7)
 		print(button_secondary_s.." return to main menu",31,110,7)
  elseif(still_alive) then
@@ -1234,7 +1244,7 @@ __sfx__
 000200001f4001e4002b3002630021300073500735007350073500735007350104000f4000e4000d4000c4000c400000000000000000000000000000000000000000000000000000000000000000000000000000
 00040000223501f3501b350143501f3001b30014300103000c3000930003300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 000500003c2703f26437252302422d632000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+000200000b2500e25010250142501b25022250182001a2001e2002320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
