@@ -8,10 +8,10 @@ function _init()
 	initial_lifes=9
 	initial_enemylife=10
 	initial_discards=1
-	initial_bag={6}
+	initial_bag={}
 	position=user_positions[1]
 	enemymove=1
-	enemydebuff=1
+	enemydebuff=0
 	current_enemy=1
 	bag_max_size=6
 	last_boss=3
@@ -721,16 +721,22 @@ function getrandomenemydebuff()
 	probs=0
 	-- sum all probs to create a probability pool
 	for i=1,#enemydebuffs_probs do
-  probs=probs+enemydebuffs_probs[i]
+	 --do not repeat enemy debuff
+	 if(enemydebuffs[i]!=enemydebuff) then
+  	probs=probs+enemydebuffs_probs[i]
+  	end
   end 
  debuff_prob=flr(rnd(probs))
  
  -- substract points until it reached 0 or below
  -- to take the random debuff
  for i=1,#enemydebuffs_probs do
- 	debuff_prob=debuff_prob-enemydebuffs_probs[i]
-  if(debuff_prob<0) then
-   return enemydebuffs[i]
+  --do not repeat enemy debuff
+  if(enemydebuffs[i]!=enemydebuff) then
+ 		debuff_prob=debuff_prob-enemydebuffs_probs[i]
+  	if(debuff_prob<0) then
+   	return enemydebuffs[i]
+  	end
   end
  end
  
