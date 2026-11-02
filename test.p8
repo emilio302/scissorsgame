@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 function _init()
-	version="0.2.5"
+	version="0.2.6"
 	screen = "menu"
 	--screen="initial"
 	initial_lifes=9
@@ -937,7 +937,7 @@ enemies = {
 		force=2,
 		debuffs={1,2,3,4,5,6},
 		debuffs_probs={50,25,50,25,75,75},
-		_map=1
+		_map=2
 	},
 	[3] = {
 		mask=64,
