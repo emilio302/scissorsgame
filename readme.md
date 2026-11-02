@@ -4,4 +4,4 @@
 
 This is a game for PICO-8 developed by Emilio Moreno Molina
 
-Link to game [https://emilio302.github.io/scissorsgame/]
+[Link to game] (https://emilio302.github.io/scissorsgame/)
