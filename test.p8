@@ -95,23 +95,50 @@ end
 -->8
 --dawing functions
 function drawhand(hand,x,y)
+ local x_1 = 35
+ local timer_1=getanimtimer("move_card_1")
+ if(timer_1!=nil) then
+ 		local add_1 = 5
+   if(timer_1<6) then
+   	add_1=timer_1
+   	end
+   x_1 += add_1*4
+  end
+ local x_2 = 55
+ local timer_2=getanimtimer("move_card_2")
+ if(timer_2!=nil) then
+   local add_2 = 5
+   if(timer_2<6) then
+   	add_2=timer_2
+   	end
+   x_2 += add_2*4
+ 	end
+ local x_3 = 75
+ local timer_3=getanimtimer("move_card_3")
+ if(timer_3!=nil) then
+   local add_3 = 127
+   if(timer_3<6) then
+   	add_3=timer_3
+   	end
+   x_3 += add_3*4
+  end
 	if cardinhandselected == 1 and position==user_positions[2] then
-			drawcard(deck[hand[1]],35,80)
+			drawcard(deck[hand[1]],x_1,80)
 			drawhint(deck[hand[1]].move+1,39,97)
 		else
-			drawcard(deck[hand[1]],35,90)
+			drawcard(deck[hand[1]],x_1,90)
 		end
 	if cardinhandselected == 2 and position==user_positions[2] then
-			drawcard(deck[hand[2]],55,80)
+			drawcard(deck[hand[2]],x_2,80)
 			drawhint(deck[hand[2]].move+1,59,97)
 		else
-			drawcard(deck[hand[2]],55,90)
+			drawcard(deck[hand[2]],x_2,90)
 		end
 	if cardinhandselected == 3 and position==user_positions[2] then
-			drawcard(deck[hand[3]],75,80)
+			drawcard(deck[hand[3]],x_3,80)
 			drawhint(deck[hand[3]].move+1,79,97)
 		else
-			drawcard(deck[hand[3]],75,90)
+			drawcard(deck[hand[3]],x_3,90)
 		end
 	if cardinhandselected == 4 and position==user_positions[2] then
 		print("\#0"..#deck_todraw.." left",95,82,7)
@@ -195,6 +222,16 @@ function drawcard(card,x,y)
 end
 
 function drawhint(user,x,y)
+ local timer_1=getanimtimer("move_card_1")
+ local timer_2=getanimtimer("move_card_2")
+ local timer_3=getanimtimer("move_card_3")
+ if(
+ timer_1!=nil or 
+ timer_2!=nil or
+ timer_3!=nil) 
+ then
+  return
+  end
  local result = calculatewinmove(user,enemymove)
  if(result=="win") then
  	spr(196,x,y)
@@ -523,6 +560,13 @@ function getcard()
  	shuffledeck()
  	end
 	add(hand,deli(deck_todraw,1))
+	add(animations,{timer=7,name="move_card_3"})
+	if cardinhandselected==1 then
+		add(animations,{timer=5,name="move_card_1"})
+	end
+	if cardinhandselected<3 then
+		add(animations,{timer=6,name="move_card_2"})
+	end
 end
 
 function discardcard(card)
