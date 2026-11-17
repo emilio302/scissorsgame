@@ -975,86 +975,86 @@ enemies = {
 --		debuffs={5},
 --		debuffs_probs={100}
 		},
-	[2] = {
-		mask=32,
-		face=32,
-		force=2,
-		debuffs={1,2,3,4,5,6},
-		debuffs_probs={50,25,50,25,75,75},
-		_map=2
-	},
-	[3] = {
-		mask=64,
-		face=64,
-		force=3,
-		debuffs={2,3,4,5,6},
-		debuffs_probs={75,75,25,25,50},
-		_map=3
-	}
 --	[2] = {
---		mask=0,
+--		mask=32,
 --		face=32,
 --		force=2,
 --		debuffs={1,2,3,4,5,6},
 --		debuffs_probs={50,25,50,25,75,75},
---		_map=1
+--		_map=2
 --	},
 --	[3] = {
---		mask=0,
---		face=64,
---		force=3,
---		debuffs={1,2,3,4,5,6},
---		debuffs_probs={50,25,50,25,75,75},
---		_map=1
---	},
---	[4] = {
---		mask=32,
---		face=0,
---		force=3,
---		debuffs={1,2,3,4,5,6},
---		debuffs_probs={50,25,50,25,75,75},
---		_map=2
---	},
---	[5] = {
---		mask=32,
---		face=32,
---		force=3,
---		debuffs={1,2,3,4,5,6},
---		debuffs_probs={50,25,50,25,75,75},
---		_map=2
---	},
---	[6] = {
---		mask=32,
---		face=64,
---		force=5,
---		debuffs={1,2,3,4,5,6},
---		debuffs_probs={50,25,50,25,75,75},
---		_map=2
---	},
---	[7] = {
---		mask=64,
---		face=0,
---		force=5,
---		debuffs={1,2,3,4,5,6},
---		debuffs_probs={50,25,50,25,75,75},
---		_map=3
---	},
---	[8] = {
---		mask=64,
---		face=32,
---		force=5,
---		debuffs={1,2,3,4,5,6},
---		debuffs_probs={50,25,50,25,75,75},
---		_map=3
---	},
---	[9] = {
 --		mask=64,
 --		face=64,
---		force=9,
+--		force=3,
 --		debuffs={2,3,4,5,6},
 --		debuffs_probs={75,75,25,25,50},
 --		_map=3
 --	}
+	[2] = {
+		mask=0,
+		face=32,
+		force=2,
+		debuffs={1,3,4,5},
+		debuffs_probs={50,50,25,25},
+		_map=1
+	},
+	[3] = {
+		mask=0,
+		face=64,
+		force=3,
+		debuffs={1,3,4,5},
+		debuffs_probs={30,50,30,30},
+		_map=1
+	},
+	[4] = {
+		mask=32,
+		face=0,
+		force=3,
+		debuffs={1,3,4,5,6},
+		debuffs_probs={25,50,50,75,75},
+		_map=2
+	},
+	[5] = {
+		mask=32,
+		face=32,
+		force=3,
+		debuffs={1,3,4,5,6},
+		debuffs_probs={20,40,50,75,60},
+		_map=2
+	},
+	[6] = {
+		mask=32,
+		face=64,
+		force=5,
+		debuffs={1,2,3,4,5,6},
+		debuffs_probs={50,25,40,40,75,75},
+		_map=2
+	},
+	[7] = {
+		mask=64,
+		face=0,
+		force=5,
+		debuffs={2,3,4,5,6},
+		debuffs_probs={30,50,25,75,75},
+		_map=3
+	},
+	[8] = {
+		mask=64,
+		face=32,
+		force=5,
+		debuffs={2,3,4,5,6},
+		debuffs_probs={75,40,25,50,50},
+		_map=3
+	},
+	[9] = {
+		mask=64,
+		face=64,
+		force=9,
+		debuffs={2,3,4,5,6},
+		debuffs_probs={100,50,20,20,10},
+		_map=3
+	}
 }
 
 --sprites
