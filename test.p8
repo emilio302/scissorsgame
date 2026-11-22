@@ -524,7 +524,7 @@ sspr(0,96,32,32,35,intro_y,64,64)
 
 if(intro_y>14) then
 		print("welcome to",20,80)
-		print("sicissors card",20,92)
+		print("scissors cards",20,92)
 		print("a rock and paper game",20,104)
 		print("please press "..button_accept_s.." button",20,116)
 		print(version,105,0)
