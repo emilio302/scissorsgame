@@ -1177,6 +1177,9 @@ sspr(enemies[current_enemy].face,48,32,16,x,y+16,32,16)
 if(skip_enemy_dialog==false and timer==nil) then
  add(animations,{timer=#text,name="dialogtext"})	
 	end
+if(not skip_enemy_dialog) then
+ print("❎ skip",1,123,7)
+ end
 if(skip_enemy_dialog) then
  print("❎ play",1,123,7)
  end
