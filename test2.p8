@@ -906,6 +906,32 @@ button_accept=4
 button_accept_s="🅾️"
 button_secondary=5
 button_secondary_s="❎"
+text_to_wait="                            "
+
+dialogs={
+-- 1
+"al: \tif i win you'll\n"..
+		 "\t\tface the experiment."..
+		 text_to_wait..
+		 "\n\n"..
+		 "you: \tok, but if i win\n"..
+		 "\t\tyou'll tell me how\n"..
+		 "\t\tto comeback home."..
+		 text_to_wait..
+		 "\n\n"..
+		 "al: \tseems fair.",
+--2
+"al: \tif i win you'll\n"..
+		 "\t\tface the experiment."..
+		 text_to_wait..
+		 "\n\n"..
+		 "you: \tok, but if i win\n"..
+		 "\t\tyou'll tell me how\n"..
+		 "\t\tto comeback home."..
+		 text_to_wait..
+		 "\n\n"..
+		 "al: \tseems fair."
+}
 
 user_positions={
 "init",
@@ -995,10 +1021,7 @@ enemies = {
 		debuffs={1,3,5},
 		debuffs_probs={75,30,15},
 		_map=1,
-		text="if you win i'll tell who can\n"..
-		 "return you to the earth.\n"..
-		 "but if i win you must face\n"..
-		 "our experiment."
+		text=dialogs[1]
 --		debuffs={5},
 --		debuffs_probs={100}
 		},
@@ -1025,10 +1048,7 @@ enemies = {
 		debuffs={1,3,4,5},
 		debuffs_probs={50,50,25,25},
 		_map=1,
-		text="if you win i'll tell who can\n"..
-		 "return you to the earth.\n"..
-		 "but if i win you must face\n"..
-		 "our experiment."
+		text=dialogs[1]
 	},
 	[3] = {
 		mask=0,
@@ -1037,10 +1057,7 @@ enemies = {
 		debuffs={1,3,4,5},
 		debuffs_probs={30,50,30,30},
 		_map=1,
-		text="if you win i'll tell who can\n"..
-		 "return you to the earth.\n"..
-		 "but if i win you must face\n"..
-		 "our experiment."
+		text=dialogs[1]
 	},
 	[4] = {
 		mask=32,
@@ -1049,10 +1066,7 @@ enemies = {
 		debuffs={1,3,4,5,6},
 		debuffs_probs={25,50,50,75,75},
 		_map=2,
-		text="if you win i'll tell who can\n"..
-		 "return you to the earth.\n"..
-		 "but if i win you must face\n"..
-		 "our experiment."
+		text=dialogs[1]
 	},
 	[5] = {
 		mask=32,
@@ -1061,10 +1075,7 @@ enemies = {
 		debuffs={1,3,4,5,6},
 		debuffs_probs={20,40,50,75,60},
 		_map=2,
-		text="if you win i'll tell who can\n"..
-		 "return you to the earth.\n"..
-		 "but if i win you must face\n"..
-		 "our experiment."
+		text=dialogs[1]
 	},
 	[6] = {
 		mask=32,
@@ -1073,10 +1084,7 @@ enemies = {
 		debuffs={1,2,3,4,5,6},
 		debuffs_probs={50,25,40,40,75,75},
 		_map=2,
-		text="if you win i'll tell who can\n"..
-		 "return you to the earth.\n"..
-		 "but if i win you must face\n"..
-		 "our experiment."
+		text=dialogs[1]
 	},
 	[7] = {
 		mask=64,
@@ -1085,10 +1093,7 @@ enemies = {
 		debuffs={2,3,4,5,6},
 		debuffs_probs={30,50,25,75,75},
 		_map=3,
-		text="if you win i'll tell who can\n"..
-		 "return you to the earth.\n"..
-		 "but if i win you must face\n"..
-		 "our experiment."
+		text=dialogs[1]
 	},
 	[8] = {
 		mask=64,
@@ -1097,10 +1102,7 @@ enemies = {
 		debuffs={2,3,4,5,6},
 		debuffs_probs={75,40,25,50,50},
 		_map=3,
-		text="if you win i'll tell who can\n"..
-		 "return you to the earth.\n"..
-		 "but if i win you must face\n"..
-		 "our experiment."
+		text=dialogs[1]
 	},
 	[9] = {
 		mask=64,
@@ -1109,10 +1111,7 @@ enemies = {
 		debuffs={2,3,4,5,6},
 		debuffs_probs={100,50,20,20,10},
 		_map=3,
-		text="if you win i'll tell who can\n"..
-		 "return you to the earth.\n"..
-		 "but if i win you must face\n"..
-		 "our experiment."
+		text=dialogs[1]
 	}
 }
 
@@ -1191,10 +1190,12 @@ function printtext(text)
 local timer=getanimtimer("dialogtext")
 local text_size = #text
 if(timer!=nil and not skip_enemy_dialog) then
- if(timer%2==0) then
-  sfx(effects_sfx["write"])
-  end
  text_size = #text-timer
+ if(timer%2==0) then
+  if(sub(text,text_size,text_size)!=" ") then
+   sfx(effects_sfx["write"])
+   end
+  end
 	end
  print(sub(text,1,text_size),0,45)
 end
