@@ -117,6 +117,14 @@ function getanimtimer(name)
   end
  end
 end
+
+function removeanim(name)
+ for anim in all(animations) do
+  if anim.name == name then
+   del(animations, anim)
+  end
+ end
+end
 -->8
 --dawing functions
 function drawhand(hand,x,y)
@@ -1253,6 +1261,7 @@ if(not skip_enemy_dialog) then
  print("❎ skip",1,123,7)
  end
 if(skip_enemy_dialog) then
+	removeanim("dialogtext")
  print("❎ play",1,123,7)
  end
 if(timer==1) then
