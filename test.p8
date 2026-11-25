@@ -17,7 +17,9 @@ function _init()
 	still_alive=true
 	immune=false
 	powerup=""
+	change_to_enemydialog=false
 	change_to_game=false
+	skip_enemy_dialog=false
 	cls(0)
 	palt(0,false) 
 	palt(11,true)
@@ -29,10 +31,14 @@ end
 function _draw()
 	if screen=="menu" then
 		loadintro()
+		skip_enemy_dialog=false
 		end
 	if screen=="initial" then
 		initialsetup()
-		screen="game"
+		screen="enemydialog"
+		end
+	if screen=="enemydialog" then
+		loadenemydialog()
 		end
 	if screen=="game" then
 		loadmainscene()
@@ -52,13 +58,26 @@ function _update()
 -- 	end
 -- end
  if btnp(button_accept) and screen=="menu" then
+		music(-1)
 		screen="initial"
+	end
+	if not btn(button_accept) and screen=="enemydialog" then
+	 enemy_dialog_button_release=true
+	end
+	if btnp(button_accept) and screen=="enemydialog" then	
+			if(skip_enemy_dialog==true) then
+			 skip_enemy_dialog=false
+			 change_to_game=true
+			end
+			if(skip_enemy_dialog==false) then
+			 skip_enemy_dialog=true
+			end
 	end
 	if btnp(button_accept) and screen=="finishedgame" then
 		if current_enemy<#enemies then
 		 if(still_alive) then
 				setupnewround()
-				change_to_game=true
+				change_to_enemydialog=true
 			else
 			 add(animations,{timer=30,name="intro"})
 				screen="menu"
@@ -68,7 +87,13 @@ function _update()
 		 screen="menu"
 		end
 	end
-	if(not btnp(button_accept) and change_to_game==true and screen=="finishedgame") then
+	if(not btnp(button_accept) and change_to_enemydialog==true and screen=="finishedgame") then
+		--this avoids missclic in starting hand
+		change_to_enemydialog=false
+		skip_enemy_dialog=false
+		screen="enemydialog"
+	end
+	if(not btnp(button_accept) and change_to_game==true and screen=="enemydialog") then
 		--this avoids missclic in starting hand
 		change_to_game=false
 		screen="game"
@@ -883,6 +908,102 @@ button_accept=4
 button_accept_s="🅾️"
 button_secondary=5
 button_secondary_s="❎"
+text_to_wait="                            "
+
+dialogs={
+-- 1
+"al: \tif i win you'll\n"..
+		 "\t\tface the experiment."..
+		 text_to_wait..
+		 "\n\n"..
+"you: \tok, but if i win\n"..
+		 "\t\tyou'll tell me how\n"..
+		 "\t\tto comeback home."..
+		 text_to_wait..
+		 "\n\n"..
+"al: \tseems fair.",
+--2
+"al: \tyou have to talk with\n"..
+		 "\t\tthe chief engineer."..
+		 text_to_wait..
+		 "\n\n"..
+"you: \twhere is him?"..
+		 text_to_wait..
+		 "\n\n"..
+"al: \tthat's another game.",
+--3
+"you: \twhere is the\n"..
+		 "\t\tchief engineer?"..
+		 text_to_wait..
+		 "\n\n"..
+"al: \ton the bridge.\n"..
+		 "\t\tbut i won't let\n"..
+		 "\t\tyou leave."..
+		 text_to_wait..
+		 "\n\n"..
+"you: \tif i beat you once\n"..
+   "\t\tmore you will.",
+--4
+"bo: \tmust stop you.\n"..
+		 "\t\tlose, face the\n"..
+		 "\t\texperiment."..
+		 text_to_wait..
+		 "\n\n"..
+"you: \tif i win, do\n"..
+   "\t\twhat i ask.",
+--5
+"you: \tdon't stop me.\n"..
+"\t\ti need to pass\n"..
+"\t\tthe door"..
+   text_to_wait..
+		 "\n\n"..
+"bo: \tdoor not open\n"..
+		 text_to_wait..
+		 "\n\n"..
+"you: \tlooks like\n"..
+			"\t\tit's time to play...",
+--6
+"you: \twhere is the\n"..
+			"\t\tchief engineer?"..
+   text_to_wait..
+		 "\n\n"..
+"bo: \tcan let you there\n"..
+			"\t\tif i loose"..
+		 text_to_wait..
+		 "\n\n"..
+"you: \tthis is insane...\n",
+--7
+"ed: \tso, you want comeback\n"..
+"\t\thome?"..
+   text_to_wait..
+		 "\n\n"..
+"you: \tyes."..
+   text_to_wait..
+		 "\n\n"..
+"ed: \tbeat me to know\n"..
+		"\t\tthe answer.",
+--8
+"ed: \tyou'll need the\n"..
+"\t\tship."..
+   text_to_wait..
+		 "\n\n"..
+"you: \tcool, where is it?"..
+   text_to_wait..
+		 "\n\n"..
+"ed: \tthat information\n"..
+		"\t\thas a price.",
+--9
+"ed: \tship is at the\n"..
+"\t\tdock but you don't\n"..
+"\t\tknow how to use it."..
+   text_to_wait..
+		 "\n\n"..
+"you: \tif i win this\n"..
+"\t\tlast match set\n"..
+"\t\tthe autopilot.\n"..
+"\t\ti need leave this\n"..
+"\t\tplace..."
+}
 
 user_positions={
 "init",
@@ -971,7 +1092,8 @@ enemies = {
 		force=1,
 		debuffs={1,3,5},
 		debuffs_probs={75,30,15},
-		_map=1
+		_map=1,
+		text=dialogs[1]
 --		debuffs={5},
 --		debuffs_probs={100}
 		},
@@ -997,7 +1119,8 @@ enemies = {
 		force=2,
 		debuffs={1,3,4,5},
 		debuffs_probs={50,50,25,25},
-		_map=1
+		_map=1,
+		text=dialogs[2]
 	},
 	[3] = {
 		mask=0,
@@ -1005,7 +1128,8 @@ enemies = {
 		force=3,
 		debuffs={1,3,4,5},
 		debuffs_probs={30,50,30,30},
-		_map=1
+		_map=1,
+		text=dialogs[3]
 	},
 	[4] = {
 		mask=32,
@@ -1013,7 +1137,8 @@ enemies = {
 		force=3,
 		debuffs={1,3,4,5,6},
 		debuffs_probs={25,50,50,75,75},
-		_map=2
+		_map=2,
+		text=dialogs[4]
 	},
 	[5] = {
 		mask=32,
@@ -1021,7 +1146,8 @@ enemies = {
 		force=3,
 		debuffs={1,3,4,5,6},
 		debuffs_probs={20,40,50,75,60},
-		_map=2
+		_map=2,
+		text=dialogs[5]
 	},
 	[6] = {
 		mask=32,
@@ -1029,7 +1155,8 @@ enemies = {
 		force=5,
 		debuffs={1,2,3,4,5,6},
 		debuffs_probs={50,25,40,40,75,75},
-		_map=2
+		_map=2,
+		text=dialogs[6]
 	},
 	[7] = {
 		mask=64,
@@ -1037,7 +1164,8 @@ enemies = {
 		force=5,
 		debuffs={2,3,4,5,6},
 		debuffs_probs={30,50,25,75,75},
-		_map=3
+		_map=3,
+		text=dialogs[7]
 	},
 	[8] = {
 		mask=64,
@@ -1045,7 +1173,8 @@ enemies = {
 		force=5,
 		debuffs={2,3,4,5,6},
 		debuffs_probs={75,40,25,50,50},
-		_map=3
+		_map=3,
+		text=dialogs[8]
 	},
 	[9] = {
 		mask=64,
@@ -1053,7 +1182,8 @@ enemies = {
 		force=9,
 		debuffs={2,3,4,5,6},
 		debuffs_probs={100,50,20,20,10},
-		_map=3
+		_map=3,
+		text=dialogs[9]
 	}
 }
 
@@ -1072,7 +1202,8 @@ enemy_damage=2,
 not_allowed=3,
 dicard=4,
 shield=5,
-liveup=6
+liveup=6,
+write=7
 }
 -->8
 --load finishedgame scene
@@ -1104,6 +1235,45 @@ cls(0)
 print(text,10,60)
 end
 
+-- loadenemydialog
+function loadenemydialog()
+cls(0)
+local	x=48
+local	y=10
+local timer=getanimtimer("dialogtext")
+local text = enemies[current_enemy].text
+sspr(enemies[current_enemy].mask,32,32,16,x,y,32,16)
+sspr(enemies[current_enemy].face,48,32,16,x,y+16,32,16)
+--spr(64,48,10,4,2)
+--spr(96,48,26,4,2)
+if(skip_enemy_dialog==false and timer==nil) then
+ add(animations,{timer=#text,name="dialogtext"})	
+	end
+if(not skip_enemy_dialog) then
+ print("❎ skip",1,123,7)
+ end
+if(skip_enemy_dialog) then
+ print("❎ play",1,123,7)
+ end
+if(timer==1) then
+	skip_enemy_dialog=true
+	end
+printtext(text)
+end
+
+function printtext(text)
+local timer=getanimtimer("dialogtext")
+local text_size = #text
+if(timer!=nil and not skip_enemy_dialog) then
+ text_size = #text-timer
+ if(timer%2==0) then
+  if(sub(text,text_size,text_size)!=" ") then
+   sfx(effects_sfx["write"])
+   end
+  end
+	end
+ print(sub(text,1,text_size),0,45)
+end
 __gfx__
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb77777777bbbbbb000000000000bbbbbbbbb00bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 bbbbbbbbbbbbbbbbbbbbb0bbb0bbbbbbbbbbbbb0bbbbbbbbbbb7777777777bbbb00ee000000ee00bbbbbbb0880bbbbbbbbbb11011011bbbbbbbbbbbbbbbbbbbb
@@ -1381,7 +1551,7 @@ __sfx__
 00040000223501f3501b350143501f3001b30014300103000c3000930003300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 000500003c2703f26437252302422d632000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 000200000b2500e25010250142501b25022250182001a2001e2002320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00010000000001f0501f0500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

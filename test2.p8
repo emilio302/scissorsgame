@@ -31,6 +31,7 @@ end
 function _draw()
 	if screen=="menu" then
 		loadintro()
+		skip_enemy_dialog=false
 		end
 	if screen=="initial" then
 		initialsetup()
@@ -65,8 +66,8 @@ function _update()
 	end
 	if btnp(button_accept) and screen=="enemydialog" then	
 			if(skip_enemy_dialog==true) then
-			 change_to_game=true
 			 skip_enemy_dialog=false
+			 change_to_game=true
 			end
 			if(skip_enemy_dialog==false) then
 			 skip_enemy_dialog=true
@@ -89,6 +90,7 @@ function _update()
 	if(not btnp(button_accept) and change_to_enemydialog==true and screen=="finishedgame") then
 		--this avoids missclic in starting hand
 		change_to_enemydialog=false
+		skip_enemy_dialog=false
 		screen="enemydialog"
 	end
 	if(not btnp(button_accept) and change_to_game==true and screen=="enemydialog") then
@@ -914,23 +916,93 @@ dialogs={
 		 "\t\tface the experiment."..
 		 text_to_wait..
 		 "\n\n"..
-		 "you: \tok, but if i win\n"..
+"you: \tok, but if i win\n"..
 		 "\t\tyou'll tell me how\n"..
 		 "\t\tto comeback home."..
 		 text_to_wait..
 		 "\n\n"..
-		 "al: \tseems fair.",
+"al: \tseems fair.",
 --2
-"al: \tif i win you'll\n"..
-		 "\t\tface the experiment."..
+"al: \tyou have to talk with\n"..
+		 "\t\tthe chief engineer."..
 		 text_to_wait..
 		 "\n\n"..
-		 "you: \tok, but if i win\n"..
-		 "\t\tyou'll tell me how\n"..
-		 "\t\tto comeback home."..
+"you: \twhere is him?"..
 		 text_to_wait..
 		 "\n\n"..
-		 "al: \tseems fair."
+"al: \tthat's another game.",
+--3
+"you: \twhere is the\n"..
+		 "\t\tchief engineer?"..
+		 text_to_wait..
+		 "\n\n"..
+"al: \ton the bridge.\n"..
+		 "\t\tbut i won't let\n"..
+		 "\t\tyou leave."..
+		 text_to_wait..
+		 "\n\n"..
+"you: \tif i beat you once\n"..
+   "\t\tmore you will.",
+--4
+"bo: \tmust stop you.\n"..
+		 "\t\tlose, face the\n"..
+		 "\t\texperiment."..
+		 text_to_wait..
+		 "\n\n"..
+"you: \tif i win, do\n"..
+   "\t\twhat i ask.",
+--5
+"you: \tdon't stop me.\n"..
+"\t\ti need to pass\n"..
+"\t\tthe door"..
+   text_to_wait..
+		 "\n\n"..
+"bo: \tdoor not open\n"..
+		 text_to_wait..
+		 "\n\n"..
+"you: \tlooks like\n"..
+			"\t\tit's time to play...",
+--6
+"you: \twhere is the\n"..
+			"\t\tchief engineer?"..
+   text_to_wait..
+		 "\n\n"..
+"bo: \tcan let you there\n"..
+			"\t\tif i loose"..
+		 text_to_wait..
+		 "\n\n"..
+"you: \tthis is insane...\n",
+--7
+"ed: \tso, you want comeback\n"..
+"\t\thome?"..
+   text_to_wait..
+		 "\n\n"..
+"you: \tyes."..
+   text_to_wait..
+		 "\n\n"..
+"ed: \tbeat me to know\n"..
+		"\t\tthe answer.",
+--8
+"ed: \tyou'll need the\n"..
+"\t\tship."..
+   text_to_wait..
+		 "\n\n"..
+"you: \tcool, where is it?"..
+   text_to_wait..
+		 "\n\n"..
+"ed: \tthat information\n"..
+		"\t\thas a price.",
+--9
+"ed: \tship is at the\n"..
+"\t\tdock but you don't\n"..
+"\t\tknow how to use it."..
+   text_to_wait..
+		 "\n\n"..
+"you: \tif i win this\n"..
+"\t\tlast match set\n"..
+"\t\tthe autopilot.\n"..
+"\t\ti need leave this\n"..
+"\t\tplace..."
 }
 
 user_positions={
@@ -1048,7 +1120,7 @@ enemies = {
 		debuffs={1,3,4,5},
 		debuffs_probs={50,50,25,25},
 		_map=1,
-		text=dialogs[1]
+		text=dialogs[2]
 	},
 	[3] = {
 		mask=0,
@@ -1057,7 +1129,7 @@ enemies = {
 		debuffs={1,3,4,5},
 		debuffs_probs={30,50,30,30},
 		_map=1,
-		text=dialogs[1]
+		text=dialogs[3]
 	},
 	[4] = {
 		mask=32,
@@ -1066,7 +1138,7 @@ enemies = {
 		debuffs={1,3,4,5,6},
 		debuffs_probs={25,50,50,75,75},
 		_map=2,
-		text=dialogs[1]
+		text=dialogs[4]
 	},
 	[5] = {
 		mask=32,
@@ -1075,7 +1147,7 @@ enemies = {
 		debuffs={1,3,4,5,6},
 		debuffs_probs={20,40,50,75,60},
 		_map=2,
-		text=dialogs[1]
+		text=dialogs[5]
 	},
 	[6] = {
 		mask=32,
@@ -1084,7 +1156,7 @@ enemies = {
 		debuffs={1,2,3,4,5,6},
 		debuffs_probs={50,25,40,40,75,75},
 		_map=2,
-		text=dialogs[1]
+		text=dialogs[6]
 	},
 	[7] = {
 		mask=64,
@@ -1093,7 +1165,7 @@ enemies = {
 		debuffs={2,3,4,5,6},
 		debuffs_probs={30,50,25,75,75},
 		_map=3,
-		text=dialogs[1]
+		text=dialogs[7]
 	},
 	[8] = {
 		mask=64,
@@ -1102,7 +1174,7 @@ enemies = {
 		debuffs={2,3,4,5,6},
 		debuffs_probs={75,40,25,50,50},
 		_map=3,
-		text=dialogs[1]
+		text=dialogs[8]
 	},
 	[9] = {
 		mask=64,
@@ -1111,7 +1183,7 @@ enemies = {
 		debuffs={2,3,4,5,6},
 		debuffs_probs={100,50,20,20,10},
 		_map=3,
-		text=dialogs[1]
+		text=dialogs[9]
 	}
 }
 
