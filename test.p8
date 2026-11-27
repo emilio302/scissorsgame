@@ -8,7 +8,6 @@ function _init()
 	initial_lifes=9
 	initial_enemylife=10
 	initial_discards=1
-	initial_bag={}
 	position=user_positions[1]
 	enemymove=1
 	enemydebuff=0
@@ -529,7 +528,7 @@ function initialsetup()
 still_alive=true
 immune=false
 current_enemy=1
-bag=initial_bag
+bag={}
 enemylife=initial_enemylife
 lifes=initial_lifes
 round_discards=initial_discards
@@ -920,93 +919,93 @@ text_to_wait="                            "
 
 dialogs={
 -- 1
-"al: \tif i win you'll\n"..
+" al: \tif i win you'll\n"..
 		 "\t\tface the experiment."..
 		 text_to_wait..
 		 "\n\n"..
-"you: \tok, but if i win\n"..
+" you: \tok, but if i win\n"..
 		 "\t\tyou'll tell me how\n"..
 		 "\t\tto comeback home."..
 		 text_to_wait..
 		 "\n\n"..
-"al: \tseems fair.",
+" al: \tseems fair.",
 --2
-"al: \tyou have to talk with\n"..
+" al: \tyou have to talk with\n"..
 		 "\t\tthe chief engineer."..
 		 text_to_wait..
 		 "\n\n"..
-"you: \twhere is him?"..
+" you: \twhere is him?"..
 		 text_to_wait..
 		 "\n\n"..
-"al: \tthat's another game.",
+" al: \tthat's another game.",
 --3
-"you: \twhere is the\n"..
+" you: \twhere is the\n"..
 		 "\t\tchief engineer?"..
 		 text_to_wait..
 		 "\n\n"..
-"al: \ton the bridge.\n"..
+" al: \ton the bridge.\n"..
 		 "\t\tbut i won't let\n"..
 		 "\t\tyou leave."..
 		 text_to_wait..
 		 "\n\n"..
-"you: \tif i beat you once\n"..
+" you: \tif i beat you once\n"..
    "\t\tmore you will.",
 --4
-"bo: \tmust stop you.\n"..
+" bo: \tmust stop you.\n"..
 		 "\t\tlose, face the\n"..
 		 "\t\texperiment."..
 		 text_to_wait..
 		 "\n\n"..
-"you: \tif i win, do\n"..
+" you: \tif i win, do\n"..
    "\t\twhat i ask.",
 --5
-"you: \tdon't stop me.\n"..
+" you: \tdon't stop me.\n"..
 "\t\ti need to pass\n"..
 "\t\tthe door"..
    text_to_wait..
 		 "\n\n"..
-"bo: \tdoor not open\n"..
+" bo: \tdoor not open\n"..
 		 text_to_wait..
 		 "\n\n"..
-"you: \tlooks like\n"..
+" you: \tlooks like\n"..
 			"\t\tit's time to play...",
 --6
-"you: \twhere is the\n"..
+" you: \twhere is the\n"..
 			"\t\tchief engineer?"..
    text_to_wait..
 		 "\n\n"..
-"bo: \tcan let you there\n"..
+" bo: \tcan let you there\n"..
 			"\t\tif i loose"..
 		 text_to_wait..
 		 "\n\n"..
-"you: \tthis is insane...\n",
+" you: \tthis is insane...\n",
 --7
-"ed: \tso, you want comeback\n"..
+" ed: \tso, you want comeback\n"..
 "\t\thome?"..
    text_to_wait..
 		 "\n\n"..
-"you: \tyes."..
+" you: \tyes."..
    text_to_wait..
 		 "\n\n"..
-"ed: \tbeat me to know\n"..
+" ed: \tbeat me to know\n"..
 		"\t\tthe answer.",
 --8
-"ed: \tyou'll need the\n"..
+" ed: \tyou'll need the\n"..
 "\t\tship."..
    text_to_wait..
 		 "\n\n"..
-"you: \tcool, where is it?"..
+" you: \tcool, where is it?"..
    text_to_wait..
 		 "\n\n"..
-"ed: \tthat information\n"..
+" ed: \tthat information\n"..
 		"\t\thas a price.",
 --9
-"ed: \tship is at the\n"..
+" ed: \tship is at the\n"..
 "\t\tdock but you don't\n"..
 "\t\tknow how to use it."..
    text_to_wait..
 		 "\n\n"..
-"you: \tif i win this\n"..
+" you: \tif i win this\n"..
 "\t\tlast match set\n"..
 "\t\tthe autopilot.\n"..
 "\t\ti need leave this\n"..
